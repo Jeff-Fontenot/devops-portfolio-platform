@@ -24,7 +24,7 @@ export default async function MediaChannels() {
 
   return (
     <section className="py-20 md:py-28">
-      <div className="mx-auto flex max-w-5xl flex-col items-center px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
         <FadeIn className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
             Media <span className="gradient-text">Channels</span>

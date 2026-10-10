@@ -36,7 +36,7 @@ const responsibilities = [
 export default function Experience() {
   return (
     <section className="py-20 md:py-28">
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeIn className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">

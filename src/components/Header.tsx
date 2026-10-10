@@ -35,7 +35,7 @@ export default function Header() {
       }`}
     >
       <div className="flex justify-center py-3">
-        <div className="max-w-5xl flex justify-between items-center px-4 sm:px-6 lg:px-8 font-medium text-white w-full">
+        <div className="max-w-6xl flex justify-between items-center px-4 sm:px-6 lg:px-8 font-medium text-white w-full">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
             <img
@@ -94,7 +94,7 @@ export default function Header() {
           isMenuOpen ? "max-h-72 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="max-w-5xl mx-auto px-4 py-4 space-y-1">
+        <div className="max-w-6xl mx-auto px-4 py-4 space-y-1">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}

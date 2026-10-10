@@ -132,7 +132,7 @@ export default function SwiperBadges({ items }: { items: CertItem[] }) {
   });
 
   return (
-    <section className="relative mx-auto w-full max-w-5xl px-8">
+    <section className="relative mx-auto w-full max-w-6xl px-8">
       {/* Header */}
       <div className="flex flex-col items-center text-center mb-16">
         <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">

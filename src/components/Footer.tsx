@@ -4,7 +4,7 @@ import { Github, Linkedin } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="w-full border-t border-white/10 bg-[#08090d]/60 backdrop-blur-md py-10">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 sm:px-6 lg:px-8 sm:flex-row sm:justify-between">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 sm:px-6 lg:px-8 sm:flex-row sm:justify-between">
         {/* Logo - Home Link */}
         <Link href="/" className="flex items-center gap-3">
           <img src="/Triquetra-Logo.png" alt="IT Odyssey" className="h-10 w-auto" />
