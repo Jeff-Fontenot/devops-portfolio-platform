@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Server, Boxes, Radar } from "lucide-react";
+import { Server, Boxes, Radar, Ship } from "lucide-react";
 import RadialGauge, { STATUS_COLORS } from "./RadialGauge";
-import type { HomelabMetricsResponse, HomelabStatus } from "@/types/homelab";
+import type { HomelabMetrics, HomelabMetricsResponse, HomelabStatus } from "@/types/homelab";
 
 const POLL_INTERVAL_MS = 45_000;
 const STALE_AFTER_MS = 120_000;
@@ -17,13 +17,48 @@ function scrapeStatus(percent: number | null | undefined): HomelabStatus {
   return "critical";
 }
 
+// Same null-vs-unhealthy distinction as k8sScrapeStatus in homelab-metrics.ts,
+// but "no data" renders as its own unavailable dot here rather than folding
+// into "healthy" the way the server-side overall-status calc does.
+function k8sStatus(healthy: number | null | undefined): HomelabStatus {
+  if (healthy === null || healthy === undefined) return "unavailable";
+  return healthy >= 1 ? "healthy" : "critical";
+}
+
 const STATUS_LABEL: Record<HomelabStatus, string> = {
-  healthy: "Monitored Services Healthy",
+  healthy: "All Telemetry Sources Healthy",
   warning: "Degraded",
   critical: "Attention needed",
   stale: "Stale data",
   unavailable: "Unavailable",
 };
+
+const K8S_LABEL: Record<HomelabStatus, string> = {
+  healthy: "Healthy",
+  warning: "Degraded",
+  critical: "Unavailable",
+  stale: "Stale",
+  unavailable: "No data",
+};
+
+function hasK8sData(metrics: HomelabMetrics): boolean {
+  return (
+    metrics.k8sNodesTotal !== null ||
+    metrics.k8sNodesReady !== null ||
+    metrics.k8sWorkloadPodsRunning !== null ||
+    metrics.k8sManagedNamespaces !== null ||
+    metrics.k8sScrapeHealthy !== null
+  );
+}
+
+function K8sStat({ value, label }: { value: number | string | null; label: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4">
+      <span className="text-xl font-bold text-white">{value ?? "—"}</span>
+      <span className="text-xs text-white/50">{label}</span>
+    </div>
+  );
+}
 
 function formatAgo(updatedAt: string | null, now: number): string {
   if (!updatedAt) return "never";
@@ -96,7 +131,7 @@ export default function HomelabTelemetry() {
   const isLive = !isLoading && displayStatus !== "stale" && displayStatus !== "unavailable";
 
   return (
-    <div className="glass-container mt-8 w-full p-6 md:p-8">
+    <div id="homelab-telemetry" className="glass-container mt-8 w-full p-6 md:p-8">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <Server size={20} className="text-white/70" />
@@ -115,9 +150,12 @@ export default function HomelabTelemetry() {
       </div>
 
       {isLoading ? (
-        <div className="flex flex-wrap justify-center gap-8" aria-hidden>
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-8" aria-hidden>
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-[148px] w-[148px] animate-pulse rounded-full bg-white/[0.04]" />
+            <div
+              key={i}
+              className="h-[84px] w-[84px] animate-pulse rounded-full bg-white/[0.04] sm:h-[120px] sm:w-[120px] md:h-[148px] md:w-[148px]"
+            />
           ))}
         </div>
       ) : !showGauges ? (
@@ -125,40 +163,72 @@ export default function HomelabTelemetry() {
           Telemetry is currently unavailable. Check back shortly.
         </p>
       ) : (
-        <div
-          className={`flex flex-col gap-6 transition-opacity duration-500 md:flex-row md:items-stretch md:gap-8 ${
-            isStale ? "opacity-50" : ""
-          }`}
-        >
-          <div className="grid flex-1 grid-cols-3 place-items-center gap-4">
-            <RadialGauge label="CPU" value={metrics.cpuPercent} />
-            <RadialGauge label="Memory" value={metrics.memoryPercent} />
-            <RadialGauge label="Disk" value={metrics.diskPercent} />
+        <div className={`transition-opacity duration-500 ${isStale ? "opacity-50" : ""}`}>
+          <div className="flex flex-col gap-6 md:flex-row md:items-stretch md:gap-8">
+            <div className="grid min-w-0 flex-1 grid-cols-3 place-items-center gap-2 sm:gap-4">
+              <RadialGauge label="CPU" value={metrics.cpuPercent} />
+              <RadialGauge label="Memory" value={metrics.memoryPercent} />
+              <RadialGauge label="Disk" value={metrics.diskPercent} />
+            </div>
+
+            <div className="flex gap-3 sm:gap-4 md:w-64 md:flex-col">
+              <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-5 sm:px-5 sm:py-6">
+                <Boxes size={20} className="text-white/60" />
+                <span className="text-2xl font-bold text-white">
+                  {metrics.runningContainers ?? "—"}
+                </span>
+                <span className="text-center text-xs text-white/50">Running Containers</span>
+              </div>
+
+              <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-5 sm:px-5 sm:py-6">
+                <Radar size={20} className="text-white/60" />
+                <span className="text-2xl font-bold text-white">
+                  {metrics.healthyTargets ?? "—"} / {metrics.configuredTargets ?? "—"}
+                </span>
+                <span className="flex items-center gap-1.5 text-center text-xs text-white/50">
+                  <span
+                    className="h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: STATUS_COLORS[scrapeStatus(metrics.scrapeHealthPercent)] }}
+                    aria-hidden
+                  />
+                  Prometheus Targets
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex gap-4 md:w-64 md:flex-col">
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-6">
-              <Boxes size={20} className="text-white/60" />
-              <span className="text-2xl font-bold text-white">
-                {metrics.runningContainers ?? "—"}
-              </span>
-              <span className="text-xs text-white/50">Running Containers</span>
-            </div>
-
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-6">
-              <Radar size={20} className="text-white/60" />
-              <span className="text-2xl font-bold text-white">
-                {metrics.healthyTargets ?? "—"} / {metrics.configuredTargets ?? "—"}
-              </span>
+          <div className="mt-6 border-t border-white/10 pt-5">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-white/50">
+                <Ship size={15} aria-hidden />
+                <span className="text-xs font-medium tracking-wide uppercase">Kubernetes Cluster</span>
+              </div>
               <span className="flex items-center gap-1.5 text-xs text-white/50">
                 <span
-                  className="h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: STATUS_COLORS[scrapeStatus(metrics.scrapeHealthPercent)] }}
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: STATUS_COLORS[k8sStatus(metrics.k8sScrapeHealthy)] }}
                   aria-hidden
                 />
-                Scrape Targets Healthy
+                {K8S_LABEL[k8sStatus(metrics.k8sScrapeHealthy)]}
               </span>
             </div>
+
+            {hasK8sData(metrics) ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <K8sStat
+                  value={
+                    metrics.k8sNodesReady !== null || metrics.k8sNodesTotal !== null
+                      ? `${metrics.k8sNodesReady ?? "—"} / ${metrics.k8sNodesTotal ?? "—"}`
+                      : null
+                  }
+                  label="Nodes Ready"
+                />
+                <K8sStat value={metrics.k8sWorkloadPodsRunning} label="Running Workload Pods" />
+                <K8sStat value={metrics.k8sManagedNamespaces} label="Managed Namespaces" />
+              </div>
+            ) : (
+              <p className="text-sm text-white/50">Kubernetes metrics are currently unavailable.</p>
+            )}
           </div>
         </div>
       )}

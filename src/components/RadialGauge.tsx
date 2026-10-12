@@ -74,7 +74,7 @@ export default function RadialGauge({
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         role="img"
         aria-label={`${label}: ${value === null ? "unavailable" : `${Math.round(value)}%`}`}
-        className="overflow-visible"
+        className="h-[84px] w-[84px] overflow-visible sm:h-[120px] sm:w-[120px] md:h-[148px] md:w-[148px]"
       >
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2={SIZE} y2={SIZE} gradientUnits="userSpaceOnUse">

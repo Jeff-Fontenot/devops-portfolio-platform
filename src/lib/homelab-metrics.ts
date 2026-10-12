@@ -23,6 +23,11 @@ const ALLOWED_METRICS = {
   "portfolio:healthy_scrape_targets": "healthyTargets",
   "portfolio:configured_scrape_targets": "configuredTargets",
   "portfolio:scrape_health_percent": "scrapeHealthPercent",
+  "portfolio:k8s_nodes_total": "k8sNodesTotal",
+  "portfolio:k8s_nodes_ready": "k8sNodesReady",
+  "portfolio:k8s_workload_pods_running": "k8sWorkloadPodsRunning",
+  "portfolio:k8s_managed_namespaces": "k8sManagedNamespaces",
+  "portfolio:k8s_scrape_healthy": "k8sScrapeHealthy",
 } as const satisfies Record<string, keyof HomelabMetrics>;
 
 const METRIC_NAMES = Object.keys(ALLOWED_METRICS);
@@ -50,6 +55,13 @@ function scrapeStatus(percent: number | null): HomelabStatus {
   if (percent >= 100) return "healthy";
   if (percent >= 50) return "warning";
   return "critical";
+}
+
+// null (no data at all) does not drag down overall status, same as the other
+// usage/scrape checks above — only a confirmed-unhealthy 0 does.
+function k8sScrapeStatus(healthy: number | null): HomelabStatus {
+  if (healthy === null) return "healthy";
+  return healthy >= 1 ? "healthy" : "warning";
 }
 
 const SEVERITY: Record<HomelabStatus, number> = {
@@ -112,6 +124,11 @@ export async function getHomelabMetrics(): Promise<HomelabMetricsResponse> {
     healthyTargets: null,
     configuredTargets: null,
     scrapeHealthPercent: null,
+    k8sNodesTotal: null,
+    k8sNodesReady: null,
+    k8sWorkloadPodsRunning: null,
+    k8sManagedNamespaces: null,
+    k8sScrapeHealthy: null,
   };
 
   for (const series of payload.data.result) {
@@ -133,6 +150,7 @@ export async function getHomelabMetrics(): Promise<HomelabMetricsResponse> {
     usageStatus(metrics.memoryPercent),
     usageStatus(metrics.diskPercent),
     scrapeStatus(metrics.scrapeHealthPercent),
+    k8sScrapeStatus(metrics.k8sScrapeHealthy),
   ]);
 
   return { status, updatedAt: new Date().toISOString(), metrics };
