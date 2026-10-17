@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GitHubCalendar } from "react-github-calendar";
 import "react-github-calendar/tooltips.css";
 import { Github } from "lucide-react";
@@ -12,6 +12,13 @@ const GITHUB_USERNAME = "Jeff-Fontenot";
 const calendarTheme = {
   dark: ["#11161d", "#123a63", "#1f5fa8", "#3394e5", "#8be9ff"],
 };
+
+// Same sampled blues, reused for the top-languages bars so the two widgets
+// read as one palette.
+const LANGUAGE_BAR_COLORS = ["#8be9ff", "#3394e5", "#1f5fa8", "#123a63"];
+
+type LanguageTally = { name: string; count: number };
+type RepoListItem = { language: string | null; fork: boolean };
 
 // react-github-calendar renders its own scrollable element internally
 // (`.react-activity-calendar__scroll-container`, inside the <article> root);
@@ -27,6 +34,34 @@ const INNER_SCROLL_SELECTOR = ".react-activity-calendar__scroll-container";
 
 export default function GitHubActivity() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [languages, setLanguages] = useState<LanguageTally[] | null>(null);
+
+  // Tallies primary language across public, non-fork repos (one list call,
+  // no per-repo language-bytes lookups) to fill the dead space beside the
+  // calendar on wide screens. Left null — and the rail stays hidden — on any
+  // failure or empty result rather than rendering a broken/empty state.
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&type=owner`)
+      .then((res) => (res.ok ? (res.json() as Promise<RepoListItem[]>) : Promise.reject()))
+      .then((repos) => {
+        if (cancelled || !Array.isArray(repos)) return;
+        const counts = new Map<string, number>();
+        for (const repo of repos) {
+          if (repo.fork || !repo.language) continue;
+          counts.set(repo.language, (counts.get(repo.language) ?? 0) + 1);
+        }
+        const tally = [...counts.entries()]
+          .map(([name, count]) => ({ name, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 4);
+        if (tally.length > 0) setLanguages(tally);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const wrapperEl = wrapperRef.current;
@@ -64,16 +99,40 @@ export default function GitHubActivity() {
         </a>
       </div>
 
-      <div ref={wrapperRef} className="overflow-x-auto">
-        <GitHubCalendar
-          username={GITHUB_USERNAME}
-          colorScheme="dark"
-          theme={calendarTheme}
-          fontSize={12}
-          blockSize={11}
-          blockMargin={4}
-          errorMessage="Couldn't load GitHub activity right now."
-        />
+      <div className="flex flex-col gap-6 md:flex-row">
+        <div ref={wrapperRef} className="min-w-0 flex-1 overflow-x-auto">
+          <GitHubCalendar
+            username={GITHUB_USERNAME}
+            colorScheme="dark"
+            theme={calendarTheme}
+            fontSize={12}
+            blockSize={11}
+            blockMargin={4}
+            errorMessage="Couldn't load GitHub activity right now."
+          />
+        </div>
+
+        {languages && (
+          <div className="hidden shrink-0 flex-col justify-center gap-3 border-white/10 md:flex md:w-44 md:border-l md:pl-6">
+            <span className="text-xs font-medium tracking-wide text-white/50 uppercase">
+              Top Languages
+            </span>
+            {languages.map((lang, i) => (
+              <div key={lang.name} className="flex flex-col gap-1.5">
+                <span className="text-sm text-white/80">{lang.name}</span>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max((lang.count / languages[0].count) * 100, 12)}%`,
+                      backgroundColor: LANGUAGE_BAR_COLORS[i % LANGUAGE_BAR_COLORS.length],
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
