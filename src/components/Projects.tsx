@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { Github, ArrowRight } from "lucide-react";
 import FadeIn from "./FadeIn";
 
 // Both fetch live data client-side, so their server-rendered skeleton never
@@ -10,45 +11,62 @@ import FadeIn from "./FadeIn";
 const HomelabTelemetry = dynamic(() => import("./HomelabTelemetry"), { ssr: false });
 const GitHubActivity = dynamic(() => import("./GitHubActivity"), { ssr: false });
 
+// Same semantic palette as the homelab telemetry status dots (blue/yellow/gray
+// rather than a traffic-light red/green scheme) so status reads consistently
+// across the site. Matched by keyword since the status copy itself is
+// free-form editorial text, not a fixed enum.
+const STATUS_DOT_COLOR = {
+  healthy: "#24aff5",
+  warning: "#fde047",
+  stale: "#8a8a92",
+} as const;
+
+function statusTone(status: string): keyof typeof STATUS_DOT_COLOR {
+  const s = status.toLowerCase();
+  if (s.includes("completed") || s.includes("operational")) return "healthy";
+  if (s.includes("progress") || s.includes("hardening") || s.includes("development")) return "warning";
+  return "stale";
+}
+
 const projects = [
   {
-    title: "Ops-Status: Cloud-Native Service Monitoring",
-    Status: "in-progress",
+    title: "Ops-Status: DevOps Lifecyle",
+    status: "in-progress",
     description:
-      "An evolving FastAPI service designed to monitor homelab availability, health, and response time. The working API is containerized with Docker and Compose, with the delivery roadmap extending through automated testing, GitHub Actions CI/CD, k3s deployment, and Prometheus/Grafana observability.",
+      "A working FastAPI monitoring service built as the workload for an end-to-end DevOps lifecycle. Beginning with Docker Compose, the roadmap adds automated testing and CI/CD, then promotes the same versioned container through k3s staging into Terraform-managed AWS production with end-to-end observability.",
     tech: ["Docker Compose", "Python", "FastAPI"],
-    link: "https://github.com/Jeff-Fontenot",
-    span: "md:col-span-2",
+    repoUrl: "https://github.com/Jeff-Fontenot/ops-status",
+    caseStudySlug: "ops-status",
   },
   {
     title: "WakeTrail",
-    Status: "in-progress",
+    status: "Pre-Release Hardening",
     description:
       "Built a Go-based CLI that records engineering activity and correlates it with the infrastructure state changes that follow, creating a forensic timeline for troubleshooting and incident response. Captures Git context, command execution, and Docker state transitions into a local SQLite event store, with CI enforcing formatting, vetting, and test coverage on every push.",
     tech: ["Go", "Cobra", "SQLite", "Docker", "Git", "GitHub Actions"],
-    link: "https://github.com/it-odyssey/waketrail",
-    span: "md:col-span-3",
+    repoUrl: "https://github.com/it-odyssey/waketrail",
+    caseStudySlug: "waketrail",
     ci: {
       badge: "https://github.com/it-odyssey/waketrail/actions/workflows/ci.yml/badge.svg",
     },
   },
   {
     title: "Hybrid Cloud Disaster Recovery",
-    Status: "completed",
+    status: "Completed",
     description:
       "Engineered a hybrid disaster-recovery solution for a containerized Flask/PostgreSQL application running on-prem in Proxmox, with hourly backups shipped to Amazon S3. A single terraform apply provisions AWS recovery infrastructure through an IAM instance profile and automatically restores the database, validated at roughly a 1-hour RPO and a 3:55 RTO.",
     tech: ["Terraform", "AWS", "EC2", "S3", "Docker", "PostgreSQL", "Flask"],
-    link: "https://github.com/Jeff-Fontenot/d342-hybrid-cloud-disaster-recovery",
-    span: "md:col-span-3",
+    repoUrl: "https://github.com/Jeff-Fontenot/d342-hybrid-cloud-disaster-recovery",
+    caseStudySlug: "Hybrid-Cloud-Disaster-Recovery",
   },
   {
-    title: "Menu-Based PowerShell Automation",
-    Status: "completed",
+    title: "Cloud-Native Homelab",
+    status: "Operational | Active Development",
     description:
-      "Built a PowerShell tool that queries Active Directory to give service desk analysts a ticket-ready summary of user, workstation, and printer details from one menu, replacing repeated lookups across several admin screens. Tiered search (exact, prefix, contains) with an interactive picker for ambiguous matches. Ran with read-only access and reached at least 12 analysts.",
-    tech: ["PowerShell", "Active Directory"],
-    link: "https://github.com/Jeff-Fontenot/ESD_Summary_Tool.git",
-    span: "md:col-span-2",
+      "Designed and built an integrated Proxmox platform for everyday services, application workloads, and infrastructure experimentation. Runs Docker Compose services alongside a three-node Kubernetes cluster, supported by private connectivity, DNS, TLS routing, centralized metrics and logs, and a custom operations dashboard. A Prometheus, Alloy, and Grafana Cloud pipeline publishes selected live host and Kubernetes telemetry directly to this portfolio..",
+    tech: ["Linux", "Proxmox", "K3s", "Docker Compose", "Traefik", "Tailscale", "Prometheus", "Grafana"],
+    repoUrl: "https://github.com/Jeff-Fontenot/homelab",
+    caseStudySlug: "cloud-native-homelab",
   },
 ];
 
@@ -67,40 +85,63 @@ export default function Projects() {
           </p>
         </FadeIn>
 
-        {/* Bento Grid Layout */}
-        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-5">
+        {/* Even 2x2 grid */}
+        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
           {projects.map((project, i) => (
-            <FadeIn key={project.title} delay={i * 0.08} className={project.span}>
-              <Link
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Open ${project.title} repository`}
-                className="glass-container glass-hover group block h-full cursor-pointer p-8"
-              >
-                <div className="mb-3 flex flex-wrap items-center gap-3">
-                  <h3 className="text-xl font-bold text-white transition-colors group-hover:text-yellow-300">
-                    {project.title}
-                  </h3>
-                  {project.ci && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={project.ci.badge} alt="CI build status" className="h-5" />
-                  )}
+            <FadeIn key={project.title} delay={i * 0.08}>
+              <div className="glass-container glass-hover flex h-full flex-col p-8">
+                <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                  <h3 className="text-xl font-bold text-white">{project.title}</h3>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {project.ci && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={project.ci.badge} alt="CI build status" className="h-5" />
+                    )}
+                    <span className="flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/70">
+                      <span
+                        className="h-1.5 w-1.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: STATUS_DOT_COLOR[statusTone(project.status)] }}
+                        aria-hidden
+                      />
+                      {project.status}
+                    </span>
+                  </div>
                 </div>
+
                 <p className="mb-5 text-sm leading-relaxed text-white/60">
                   {project.description}
                 </p>
-                <div className="flex flex-wrap gap-2">
+
+                <div className="mt-auto flex flex-wrap gap-2 pt-5">
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/70 transition-colors group-hover:border-yellow-300/30 group-hover:text-yellow-200"
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/70"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
-              </Link>
+
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-3 border-t border-white/10 pt-5">
+                  <Link
+                    href={`/projects/${project.caseStudySlug}`}
+                    className="btn-secondary px-4 py-2 text-sm"
+                  >
+                    View Case Study
+                    <ArrowRight size={14} className="ml-1.5" aria-hidden />
+                  </Link>
+                  <a
+                    href={project.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary px-4 py-2 text-sm"
+                  >
+                    <Github size={14} className="mr-1.5" aria-hidden />
+                    View on GitHub
+                  </a>
+                </div>
+              </div>
             </FadeIn>
           ))}
         </div>

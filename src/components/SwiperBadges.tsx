@@ -136,7 +136,7 @@ export default function SwiperBadges({ items }: { items: CertItem[] }) {
       {/* Header */}
       <div className="flex flex-col items-center text-center mb-16">
         <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-          Technical{' '}
+          Industry{' '}
           <span className="gradient-text">Certifications</span>
         </h2>
         <p className="text-lg text-white/60 leading-relaxed max-w-2xl">
