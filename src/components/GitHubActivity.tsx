@@ -7,11 +7,10 @@ import { Github } from "lucide-react";
 
 const GITHUB_USERNAME = "Jeff-Fontenot";
 
-// Fire theme sampled from the triquetra logo's flame (dark ember through
-// bright yellow), ending on the same two brand tokens used by .gradient-text
-// in globals.css — low → high activity.
+// Blue theme sampled from the triquetra logo's knotwork (dark navy through
+// its bright cyan highlight) — low → high activity.
 const calendarTheme = {
-  dark: ["#171310", "#6b3300", "#b35900", "#ff8c00", "#fde047"],
+  dark: ["#11161d", "#123a63", "#1f5fa8", "#3394e5", "#8be9ff"],
 };
 
 // react-github-calendar renders its own scrollable element internally
