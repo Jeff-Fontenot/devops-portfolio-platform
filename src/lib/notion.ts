@@ -125,6 +125,14 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   return page ? await mapPageToPost(page) : null;
 }
 
+// Notion file URLs are presigned S3 links that expire ~1 hour after being
+// issued. A cached post page can outlive that window, so this re-fetches
+// the page at request time to hand back a URL that's fresh right now.
+export async function getFreshPostCover(pageId: string): Promise<string | null> {
+  const page = await notion.pages.retrieve({ page_id: pageId });
+  return ensureCover(page);
+}
+
 export async function getBlocks(pageId: string) {
   return fetchBlocksRecursive(notion, pageId);
 }

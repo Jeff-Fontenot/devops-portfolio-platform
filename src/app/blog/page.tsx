@@ -4,6 +4,7 @@ import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getPostsWithPreviews } from "@/lib/notion";
+import { notionCoverSrc } from "@/lib/notion-image";
 
 export const revalidate = 300;
 
@@ -19,7 +20,7 @@ export const metadata = {
 
 function BlogHero() {
   return (
-    <section className="relative min-h-[42vh] md:min-h-[50vh] overflow-hidden pt-28">
+    <section className="relative overflow-hidden pt-28 pb-8">
       <div className="mx-auto max-w-6xl px-4">
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight text-white">
           Odyssey <span className="gradient-text">Blog</span>
@@ -41,7 +42,7 @@ export default async function BlogIndexPage() {
       <BlogHero />
 
       <main>
-        <section className="mx-auto max-w-6xl px-4 pb-16 -mt-10">
+        <section className="mx-auto max-w-6xl px-4 pb-16">
           {posts.length === 0 ? (
             <div className="glass-container p-6 text-white/60">
               No posts yet. Check back soon.
@@ -57,7 +58,7 @@ export default async function BlogIndexPage() {
                   {p.cover && (
                     <div className="aspect-[16/9] w-full overflow-hidden">
                       <Image
-                        src={p.cover}
+                        src={notionCoverSrc("blog", p.id)}
                         alt={p.title}
                         width={1200}
                         height={630}

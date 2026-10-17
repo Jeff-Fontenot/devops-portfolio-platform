@@ -6,6 +6,7 @@ import { getBlocks, getPostBySlug, getPosts } from "@/lib/notion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NotionContent from "@/components/NotionContent";
+import { notionCoverSrc } from "@/lib/notion-image";
 
 export const revalidate = 300;
 
@@ -26,13 +27,13 @@ export async function generateMetadata({ params }: { params: Params }) {
     openGraph: {
       title,
       description: post.description,
-      images: post.cover ? [post.cover] : [],
+      images: post.cover ? [notionCoverSrc("blog", post.id)] : [],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: post.description,
-      images: post.cover ? [post.cover] : [],
+      images: post.cover ? [notionCoverSrc("blog", post.id)] : [],
     },
   };
 }
@@ -56,7 +57,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     <Header />
     <main>
       {/* Centered mini-hero */}
-      <section className="relative min-h-[30vh] md:min-h-[36vh] overflow-hidden pt-28">
+      <section className="relative overflow-hidden pt-28">
         <div className="mx-auto max-w-6xl px-4 text-center">
           <Link
             href="/blog"
@@ -78,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         <div className="mx-auto -mt-6 max-w-3xl px-4">
           <div className="glass-container overflow-hidden">
             <Image
-              src={post.cover}
+              src={notionCoverSrc("blog", post.id)}
               alt={post.title}
               width={1600}
               height={840}

@@ -23,7 +23,7 @@ export default async function AboutPage() {
     <>
       <Header />
       <main className="min-h-screen">
-        <section className="relative min-h-[30vh] md:min-h-[36vh] overflow-hidden pt-28">
+        <section className="relative overflow-hidden pt-28 pb-6">
           <div className="mx-auto max-w-6xl px-4 text-center">
             <h1 className="my-5 text-5xl md:text-6xl font-bold tracking-tight leading-tight">
               About <span className="gradient-text">Me</span>

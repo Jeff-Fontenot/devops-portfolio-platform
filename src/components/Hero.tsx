@@ -21,7 +21,7 @@ const item: Variants = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen max-h-[1050px] flex items-center justify-center overflow-hidden pt-24">
+    <section className="relative min-h-[min(100vh,1050px)] flex items-center justify-center overflow-hidden pt-24">
       {/* Mobile Background Portrait */}
       <div className="absolute inset-0 md:hidden">
         <Image

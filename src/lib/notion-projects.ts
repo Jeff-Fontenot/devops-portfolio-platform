@@ -25,6 +25,17 @@ function plainText(rt: any[] | undefined): string {
   return rt.map((r) => r.plain_text ?? "").join("");
 }
 
+function extractCover(page: any): string | null {
+  const coverFile = page.properties?.cover?.files?.[0];
+  return (
+    coverFile?.file?.url ??
+    coverFile?.external?.url ??
+    page.cover?.external?.url ??
+    page.cover?.file?.url ??
+    null
+  );
+}
+
 function mapPageToProject(page: any): Project | null {
   const props = page.properties;
 
@@ -41,13 +52,7 @@ function mapPageToProject(page: any): Project | null {
     ? props.tags.multi_select.map((t: any) => t.name)
     : [];
 
-  const coverFile = props?.cover?.files?.[0];
-  const cover =
-    coverFile?.file?.url ??
-    coverFile?.external?.url ??
-    page.cover?.external?.url ??
-    page.cover?.file?.url ??
-    null;
+  const cover = extractCover(page);
 
   const githubUrl = props?.["GitHub Repo"]?.url ?? null;
   const featured = !!props?.Featured?.checkbox;
@@ -83,6 +88,15 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 
   const page = res.results[0];
   return page ? mapPageToProject(page) : null;
+}
+
+// Notion file URLs are presigned S3 links that expire ~1 hour after being
+// issued. A cached project page can outlive that window, so this re-fetches
+// the page at request time to hand back a URL that's fresh right now.
+export async function getFreshProjectCover(pageId: string): Promise<string | null> {
+  if (!isConfigured) return null;
+  const page = await notion.pages.retrieve({ page_id: pageId });
+  return extractCover(page);
 }
 
 export async function getProjectBlocks(pageId: string) {
