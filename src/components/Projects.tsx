@@ -67,6 +67,9 @@ const projects = [
     tech: ["Linux", "Proxmox", "K3s", "Docker Compose", "Traefik", "Tailscale", "Prometheus", "Grafana"],
     repoUrl: "https://github.com/Jeff-Fontenot/homelab",
     caseStudySlug: "cloud-native-homelab",
+    ci: {
+      badge: "https://github.com/Jeff-Fontenot/homelab/actions/workflows/ci.yml/badge.svg",
+    },
   },
 ];
 
@@ -90,13 +93,9 @@ export default function Projects() {
           {projects.map((project, i) => (
             <FadeIn key={project.title} delay={i * 0.08}>
               <div className="glass-container glass-hover flex h-full flex-col p-8">
-                <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div className="mb-3 flex flex-col items-start gap-2">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
-                  <div className="flex shrink-0 items-center gap-2">
-                    {project.ci && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={project.ci.badge} alt="CI build status" className="h-5" />
-                    )}
+                  <div className="flex w-full items-center justify-between gap-2">
                     <span className="flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/70">
                       <span
                         className="h-1.5 w-1.5 shrink-0 rounded-full"
@@ -105,6 +104,10 @@ export default function Projects() {
                       />
                       {project.status}
                     </span>
+                    {project.ci && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={project.ci.badge} alt="CI build status" className="h-5 shrink-0" />
+                    )}
                   </div>
                 </div>
 
