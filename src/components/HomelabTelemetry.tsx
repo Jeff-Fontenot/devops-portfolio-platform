@@ -27,7 +27,7 @@ function k8sStatus(healthy: number | null | undefined): HomelabStatus {
 
 const STATUS_LABEL: Record<HomelabStatus, string> = {
   healthy: "All Telemetry Sources Healthy",
-  warning: "High Utilization",
+  warning: "Live",
   critical: "Attention needed",
   stale: "Stale data",
   unavailable: "Unavailable",

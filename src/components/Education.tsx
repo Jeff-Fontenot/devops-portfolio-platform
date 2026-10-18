@@ -168,7 +168,7 @@ export default function Education() {
           <div className="glass-container p-6 sm:p-8">
             <h3 className="text-2xl font-bold text-white mb-3">Homelab Architecture</h3>
             <p className="text-white/70 leading-relaxed text-sm max-w-3xl mb-6">
-              A visual breakdown of how it all connects — from my daily-driver laptop, over a
+              A visual breakdown of how it all connects. From my daily-driver laptop, over a
               private Tailscale network, to the Proxmox host running my services, desktops, and
               Kubernetes lab.
             </p>
