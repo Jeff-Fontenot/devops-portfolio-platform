@@ -70,6 +70,9 @@ const projects = [
     ci: {
       badge: "https://github.com/Jeff-Fontenot/homelab/actions/workflows/ci.yml/badge.svg",
     },
+    cd: {
+      badge: "https://github.com/Jeff-Fontenot/homelab/actions/workflows/cd.yml/badge.svg",
+    },
   },
 ];
 
@@ -104,9 +107,17 @@ export default function Projects() {
                       />
                       {project.status}
                     </span>
-                    {project.ci && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={project.ci.badge} alt="CI build status" className="h-5 shrink-0" />
+                    {(project.ci || project.cd) && (
+                      <div className="flex shrink-0 items-center gap-1.5">
+                        {project.ci && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={project.ci.badge} alt="CI build status" className="h-5 shrink-0" />
+                        )}
+                        {project.cd && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={project.cd.badge} alt="CD deployment status" className="h-5 shrink-0" />
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
