@@ -92,7 +92,7 @@ export default function Hero() {
               </Link>
 
               <a
-                href="/resume.pdf"
+                href="/Jeffrey_Fontenot_Cloud_DevOps_Engineer_Resume_Download.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary w-full sm:w-auto px-6 py-3"

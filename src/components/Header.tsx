@@ -68,7 +68,7 @@ export default function Header() {
 
           {/* Desktop CTA Button */}
           <a
-            href="/resume.pdf"
+            href="/Jeffrey_Fontenot_Cloud_DevOps_Engineer_Resume_Download.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary hidden md:inline-flex px-4 py-2 text-sm"
@@ -106,7 +106,7 @@ export default function Header() {
             </Link>
           ))}
           <a
-            href="/resume.pdf"
+            href="/Jeffrey_Fontenot_Cloud_DevOps_Engineer_Resume_Download.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary inline-flex mt-2 px-4 py-2 text-sm"
