@@ -15,52 +15,55 @@ Live Site: [https://jeff.itodyssey.io](https://jeff.itodyssey.io)
 ```mermaid
 %%{init: {
   "theme": "base",
+  "themeCSS": ".node rect, .node circle { filter: none !important; } .edgeLabel rect { filter: none !important; }",
   "themeVariables": {
     "background": "#08090d",
     "primaryColor": "#161a23",
-    "primaryBorderColor": "#24aff5",
+    "primaryBorderColor": "#2a4a63",
     "primaryTextColor": "#f4f4f5",
     "lineColor": "#24aff5",
     "textColor": "#f4f4f5",
-    "clusterBkg": "#11141b",
-    "clusterBorder": "#2a2f3a",
-    "edgeLabelBackground": "#11141b",
+    "edgeLabelBackground": "#08090d",
     "fontFamily": "Geist, ui-sans-serif, system-ui, sans-serif",
-    "fontSize": "15px"
+    "fontSize": "14px"
   }
 }}%%
-flowchart TD
-    VIS(("Visitor")) -->|HTTPS| VC["Vercel · Next.js<br/>App Router + API Routes"]
-    GH["GitHub<br/>portfolio-site repo"] -->|"push to main"| VC
+flowchart LR
+    GH["GitHub repo"] -.->|"push to main"| VC["Vercel · Next.js"]
+    NOTION["Notion<br/>Content & Case Studies"] -->|"Notion API"| VC
 
-    subgraph GHDATA["GitHub — public data, fetched client-side"]
-        direction LR
-        GHAPI["REST API<br/>Contribution Activity"]
-        REPOS["Project Repos<br/>Actions badge.svg"]
-    end
-    VIS --> GHDATA
+    PROM["Prometheus"] -->|"federation / scrape"| ALLOY["Grafana Alloy"]
+    ALLOY -->|"remote_write"| GC["Grafana Cloud<br/>Metrics API"]
+    GC -->|"/api/homelab-metrics"| VC
 
-    VC -->|"Notion API<br/>revalidate: 300s"| NOTION["Notion<br/>About · Blog · Case Studies"]
-    VC -->|"/api/homelab-metrics"| GC["Grafana Cloud<br/>Metrics Query API"]
-
-    subgraph TELEM["Homelab Observability Pipeline"]
-        direction LR
-        PROM["Prometheus"] -->|remote_write| ALLOY["Grafana Alloy"]
-    end
-    ALLOY -->|"portfolio:* series"| GC
+    VC ==>|"HTTPS"| VIS(("Visitor"))
+    GHAPI["GitHub Public API<br/>Activity · CI Badges"] -.-> VIS
 
     classDef site fill:#fde047,stroke:#ff8c00,stroke-width:2px,color:#08090d,font-weight:bold;
-    classDef data fill:#161a23,stroke:#24aff5,stroke-width:1.5px,color:#f4f4f5;
-    classDef infra fill:#0f1115,stroke:#8be9ff,stroke-width:1.5px,color:#8be9ff;
-    classDef visitor fill:#08090d,stroke:#f4f4f5,stroke-width:1px,color:#f4f4f5;
+    classDef node fill:#161a23,stroke:#2a4a63,stroke-width:1.5px,color:#f4f4f5;
+    classDef visitor fill:#08090d,stroke:#f4f4f5,stroke-width:1.5px,color:#f4f4f5;
 
     class VC site;
-    class GH,NOTION,GC data;
-    class PROM,ALLOY infra;
+    class GH,NOTION,PROM,ALLOY,GC,GHAPI node;
     class VIS visitor;
+
+    linkStyle 0 stroke:#6b7280,stroke-width:1.5px;
+    linkStyle 1 stroke:#24aff5,stroke-width:1.5px;
+    linkStyle 2 stroke:#8be9ff,stroke-width:1.5px;
+    linkStyle 3 stroke:#8be9ff,stroke-width:1.5px;
+    linkStyle 4 stroke:#8be9ff,stroke-width:1.5px;
+    linkStyle 5 stroke:#fde047,stroke-width:2.5px;
+    linkStyle 6 stroke:#6b7280,stroke-width:1.5px;
 ```
 
-The Vercel-hosted Next.js app server-renders pages and content: Notion is queried on the server with a 5-minute revalidation window, and `/api/homelab-metrics` proxies the Grafana Cloud query so the read-only metrics token never reaches the browser. The GitHub contribution calendar and each project's CI badge, by contrast, are fetched directly by the visitor's browser — no server round-trip or token needed for public data. Telemetry itself originates in the [homelab](https://github.com/Jeff-Fontenot/homelab): Prometheus scrapes host and Kubernetes state, and Grafana Alloy forwards only the sanitized `portfolio:*` recording-rule series to the same Grafana Cloud instance this site queries.
+Four independent flows converge on the Next.js app and diverge back out to the visitor:
+
+- **Deployment** (gray) — pushing to `main` triggers a Vercel build and deploy; it never touches the running request path.
+- **Content** (blue) — Notion is queried server-side, with a 5-minute revalidation window on every Notion-backed route (About, blog, and each project case study).
+- **Observability** (cyan) — the only lane with more than one hop: Prometheus in the [homelab](https://github.com/Jeff-Fontenot/homelab) is federated/scraped by Grafana Alloy, Alloy `remote_write`s the sanitized `portfolio:*` series to Grafana Cloud, and `/api/homelab-metrics` retrieves them server-side — Alloy publishes, the Next.js API reads.
+- **Client-side** (gray, dashed) — the GitHub contribution calendar and each project's CI badge are fetched by the visitor's browser directly from GitHub's public API, bypassing Vercel entirely; no token needed for public data.
+
+The gold edge is the one path every visitor actually sees: Vercel assembles the response and serves it over HTTPS.
 
 ## PageSpeed Insights
 
