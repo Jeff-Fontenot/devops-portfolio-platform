@@ -51,6 +51,7 @@ export default function Hero() {
                 alt="IT Odyssey Logo"
                 width={500}
                 height={500}
+                sizes="(min-width: 768px) 176px, 144px"
                 priority
                 className="h-36 md:h-44 w-auto"
               />

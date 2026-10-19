@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Github, Linkedin } from "lucide-react";
 
@@ -7,7 +8,13 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 sm:px-6 lg:px-8 sm:flex-row sm:justify-between">
         {/* Logo - Home Link */}
         <Link href="/" className="flex items-center gap-3">
-          <img src="/Triquetra-Logo.png" alt="IT Odyssey" className="h-10 w-auto" />
+          <Image
+            src="/Triquetra-Logo.png"
+            alt="IT Odyssey"
+            width={250}
+            height={250}
+            className="h-10 w-auto"
+          />
         </Link>
 
         {/* Social Links */}
@@ -34,7 +41,7 @@ export default function Footer() {
 
         {/* CTA Button */}
         <a
-          href="/resume.pdf"
+          href="/Jeffrey_Fontenot_Cloud_DevOps_Engineer_Resume_Download.pdf"
           target="_blank"
           rel="noopener noreferrer"
           className="btn-secondary px-4 py-2 text-sm"
@@ -42,7 +49,7 @@ export default function Footer() {
           Download Resume
         </a>
       </div>
-      <div className="mt-8 text-center text-xs text-white/30">
+      <div className="mt-8 text-center text-xs text-white/50">
         <p>&copy; {new Date().getFullYear()} Jeff Fontenot. All rights reserved.</p>
       </div>
     </footer>

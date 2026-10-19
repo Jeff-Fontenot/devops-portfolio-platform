@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import { Maximize2, X } from "lucide-react";
 import FadeIn from "./FadeIn";
 
@@ -55,11 +56,12 @@ function DegreeCard({
             className="group relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-xl bg-white/[0.04] ring-1 ring-white/10 transition-colors hover:ring-yellow-300/40 sm:w-40"
             aria-label={`View ${alt}`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={image}
               alt={alt}
-              className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+              fill
+              sizes="(min-width: 640px) 160px, 100vw"
+              className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
             />
             <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/50 group-hover:opacity-100">
               <Maximize2 className="h-5 w-5 text-white" />
@@ -67,7 +69,7 @@ function DegreeCard({
           </button>
 
           <div className="text-center sm:text-left">
-            <h4 className="mb-1 text-lg font-semibold leading-snug text-white">{degree}</h4>
+            <h3 className="mb-1 text-lg font-semibold leading-snug text-white">{degree}</h3>
             <p className="mb-1 accent-blue font-medium">{school}</p>
             <p className="text-sm text-white/60">{meta}</p>
           </div>

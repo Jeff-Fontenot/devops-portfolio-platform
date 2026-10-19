@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
@@ -38,9 +39,12 @@ export default function Header() {
         <div className="max-w-6xl flex justify-between items-center px-4 sm:px-6 lg:px-8 font-medium text-white w-full">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3" onClick={closeMenu}>
-            <img
+            <Image
               src="/Triquetra-Logo.png"
               alt="IT Odyssey"
+              width={250}
+              height={250}
+              priority
               className="h-12 w-auto transition-transform duration-300 hover:scale-105"
             />
           </Link>

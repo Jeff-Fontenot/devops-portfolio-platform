@@ -91,7 +91,7 @@ export default function Projects() {
           </h2>
           <p className="text-lg text-white/60 leading-relaxed max-w-2xl mx-auto">
             A selection of personal and professional projects that highlight my skills in
-            cloud computing, DevOps, and web development.
+            Cloud Computing, DevOps, and Platform Engineering.
           </p>
         </FadeIn>
 
