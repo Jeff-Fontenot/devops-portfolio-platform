@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -42,9 +43,15 @@ function CertCard({ item, isListView = false }: { item: CertItem, isListView?: b
   const CardInner = (
     <div className={`glass-container glass-hover relative ${cardClass} overflow-hidden group`}>
       {/* Badge Image */}
-      <div className={`${isListView ? 'h-28' : 'h-48'} w-full bg-gradient-to-br from-white/[0.04] to-transparent flex items-center justify-center`}>
+      <div className={`relative ${isListView ? 'h-28' : 'h-48'} w-full bg-gradient-to-br from-white/[0.04] to-transparent flex items-center justify-center`}>
         {item.image ? (
-          <img src={item.image} alt={item.title} className="h-full w-full object-contain p-4" />
+          <Image
+            src={item.image}
+            alt={item.title}
+            fill
+            sizes="250px"
+            className="object-contain p-4"
+          />
         ) : (
           <BadgeCheck className="h-16 w-16 text-white/60" />
         )}
@@ -96,7 +103,6 @@ function CertCard({ item, isListView = false }: { item: CertItem, isListView?: b
       href={item.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`Open official credential for ${item.title}`}
       className="block focus:outline-none focus:ring-2 focus:ring-blue-500/60 rounded-2xl"
     >
       {CardInner}
@@ -223,12 +229,14 @@ export default function SwiperBadges({ items }: { items: CertItem[] }) {
               <div key={index} className="flex items-center justify-between py-3 border-b border-white/10 last:border-b-0">
                 <div className="flex items-center gap-4 flex-1">
                   {/* Small Badge Icon */}
-                  <div className="w-12 h-12 rounded-lg bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center flex-shrink-0">
+                  <div className="relative w-12 h-12 rounded-lg bg-white/[0.04] ring-1 ring-white/10 flex items-center justify-center flex-shrink-0">
                     {item.image ? (
-                      <img 
-                        src={item.image} 
+                      <Image
+                        src={item.image}
                         alt={item.title}
-                        className="w-10 h-10 object-contain"
+                        fill
+                        sizes="40px"
+                        className="object-contain p-1"
                       />
                     ) : (
                       <BadgeCheck className="h-6 w-6 text-white/60" />
@@ -256,7 +264,7 @@ export default function SwiperBadges({ items }: { items: CertItem[] }) {
                           href={item.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label={`Open official credential for ${item.title}`}
+                          aria-label={`Verify ${item.title} credential`}
                           className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm
                                     bg-white/[0.04] hover:bg-white/10 ring-1 ring-white/10 text-white transition-colors"
                         >

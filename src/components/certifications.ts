@@ -69,7 +69,7 @@ export const certifications: CertItem[] = [
   {
     title: "PCEP – Certified Entry-Level Python Programmer",
     subtitle: "Python Institute",
-    image: "PCEP.png",
+    image: "/PCEP.png",
     href: "https://verify.openedg.org/?id=mxsK.q4qt.xfpe",
     issuedOn: "2024-08-30",
     credentialId: "mxsK.q4qt.xfpe",
@@ -78,7 +78,7 @@ export const certifications: CertItem[] = [
   {
     title: "LPI: Linux Essentials",
     subtitle: "Linux Professional Institute",
-    image: "LPI.png",
+    image: "/LPI.png",
     href: "https://cs.lpi.org/caf/Xamman/certification/verify/LPI000628871/8rxd5ggfrl",
     issuedOn: "2024-09-09",
     credentialId: "c1891bef-b4d8-4ada-a599-effc2b242531",
@@ -87,7 +87,7 @@ export const certifications: CertItem[] = [
   {
     title: "MS-900: Microsoft 365 Fundamentals",
     subtitle: "Microsoft",
-    image: "MS900.png",
+    image: "/MS900.png",
     href: "https://learn.microsoft.com/api/credentials/share/en-us/JeffFontenot-6473/2E6DD7756B206CAB?sharingId=884197A7ED9D80B5",
     issuedOn: "2024-10-01",
     credentialId: "2E6DD7756B206CAB",
@@ -96,7 +96,7 @@ export const certifications: CertItem[] = [
     {
     title: "AZ-900: Azure Fundamentals",
     subtitle: "Microsoft",
-    image: "MS900.png",
+    image: "/MS900.png",
     href: "https://learn.microsoft.com/api/credentials/share/en-us/JeffFontenot-6473/FAEB69C5E2F46F70?sharingId=884197A7ED9D80B5",
     credentialId: "FAEB69C5E2F46F70",
     issuedOn: "2026-02-13",
@@ -105,7 +105,7 @@ export const certifications: CertItem[] = [
   {
     title: "AWS Solutions Architect Associate",
     subtitle: "Amazon Web Services", 
-    image: "SAA.png",
+    image: "/SAA.png",
     href: "https://www.credly.com/badges/16d1a773-460a-4681-9236-afc36c885998/public_url",
     issuedOn: "2026-05-18",
     credentialId: "16d1a773-460a-4681-9236-afc36c885998",
@@ -114,7 +114,7 @@ export const certifications: CertItem[] = [
   {
     title: "AWS CloudOps Engineer Associate",
     subtitle: "Amazon Web Services", 
-    image: "CloudOps.png",
+    image: "/CloudOps.png",
     href: "https://www.credly.com/badges/3a32a178-03ce-4432-8a55-1c1c3fb53ca2/public_url",
     credentialId: "3a32a178-03ce-4432-8a55-1c1c3fb53ca2",
     issuedOn: "2026-08-20",
