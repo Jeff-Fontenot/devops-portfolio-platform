@@ -12,49 +12,9 @@ Live Site: [https://jeff.itodyssey.io](https://jeff.itodyssey.io)
 
 ## Architecture
 
-```mermaid
-%%{init: {
-  "theme": "base",
-  "themeCSS": ".node rect, .node circle { filter: none !important; } .edgeLabel rect { filter: none !important; }",
-  "themeVariables": {
-    "background": "#08090d",
-    "primaryColor": "#161a23",
-    "primaryBorderColor": "#2a4a63",
-    "primaryTextColor": "#f4f4f5",
-    "lineColor": "#24aff5",
-    "textColor": "#f4f4f5",
-    "edgeLabelBackground": "#08090d",
-    "fontFamily": "Geist, ui-sans-serif, system-ui, sans-serif",
-    "fontSize": "14px"
-  }
-}}%%
-flowchart LR
-    GH["GitHub repo"] -.->|"push to main"| VC["Vercel · Next.js"]
-    NOTION["Notion<br/>Content & Case Studies"] -->|"Notion API"| VC
+![Architecture diagram: GitHub, Notion, and the homelab's Prometheus/Alloy observability pipeline all feed the Vercel-hosted Next.js app, which serves the visitor over HTTPS; the GitHub contribution calendar and CI badges are fetched by the browser directly](docs/diagrams/architecture.png)
 
-    PROM["Prometheus"] -->|"federation / scrape"| ALLOY["Grafana Alloy"]
-    ALLOY -->|"remote_write"| GC["Grafana Cloud<br/>Metrics API"]
-    GC -->|"/api/homelab-metrics"| VC
-
-    VC ==>|"HTTPS"| VIS(("Visitor"))
-    GHAPI["GitHub Public API<br/>Activity · CI Badges"] -.-> VIS
-
-    classDef site fill:#fde047,stroke:#ff8c00,stroke-width:2px,color:#08090d,font-weight:bold;
-    classDef node fill:#161a23,stroke:#2a4a63,stroke-width:1.5px,color:#f4f4f5;
-    classDef visitor fill:#08090d,stroke:#f4f4f5,stroke-width:1.5px,color:#f4f4f5;
-
-    class VC site;
-    class GH,NOTION,PROM,ALLOY,GC,GHAPI node;
-    class VIS visitor;
-
-    linkStyle 0 stroke:#6b7280,stroke-width:1.5px;
-    linkStyle 1 stroke:#24aff5,stroke-width:1.5px;
-    linkStyle 2 stroke:#8be9ff,stroke-width:1.5px;
-    linkStyle 3 stroke:#8be9ff,stroke-width:1.5px;
-    linkStyle 4 stroke:#8be9ff,stroke-width:1.5px;
-    linkStyle 5 stroke:#fde047,stroke-width:2.5px;
-    linkStyle 6 stroke:#6b7280,stroke-width:1.5px;
-```
+[Edit the architecture diagram source](docs/diagrams/architecture.mmd) — a Mermaid flowchart, rendered to this PNG with `mmdc` rather than embedded as a live diagram, since GitHub's pan/zoom overlay for wide Mermaid diagrams otherwise covers part of the graph.
 
 Four independent flows converge on the Next.js app and diverge back out to the visitor:
 
@@ -169,6 +129,7 @@ npm start
 | `src/lib/` | Notion client, Notion block/image handling, homelab metrics fetching, YouTube helpers |
 | `src/types/` | Shared TypeScript types for homelab metrics, skills, certifications |
 | `public/` | Static assets — certification badges, diplomas, skill icons, resume PDF, logos |
+| `docs/diagrams/` | Editable Mermaid architecture diagram source, rendered to the PNG embedded above |
 | `docs/images/` | README screenshots, including the PageSpeed captures above |
 
 ## Roadmap
