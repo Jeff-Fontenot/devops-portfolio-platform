@@ -14,7 +14,7 @@ Live Site: [https://jeff.itodyssey.io](https://jeff.itodyssey.io)
 
 ![Architecture diagram: GitHub, Notion, and the homelab's Prometheus/Alloy observability pipeline all feed the Vercel-hosted Next.js app, which serves the visitor over HTTPS; the GitHub contribution calendar and CI badges are fetched by the browser directly](docs/diagrams/Portfolio-Architecture.svg)
 
-[Edit the architecture diagram in Excalidraw](docs/diagrams/Porfolio-Architecture.excalidraw).
+[Edit the architecture diagram in Excalidraw](docs/diagrams/Portfolio-Architecture.excalidraw).
 
 Four independent flows converge on the Next.js app and diverge back out to the visitor:
 
