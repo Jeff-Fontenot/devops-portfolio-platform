@@ -12,16 +12,16 @@ Live Site: [https://jeff.itodyssey.io](https://jeff.itodyssey.io)
 
 ## Architecture
 
-![Architecture diagram: GitHub, Notion, and the homelab's Prometheus/Alloy observability pipeline all feed the Vercel-hosted Next.js app, which serves the visitor over HTTPS; the GitHub contribution calendar and CI badges are fetched by the browser directly](docs/diagrams/architecture.png)
+![Architecture diagram: GitHub, Notion, and the homelab's Prometheus/Alloy observability pipeline all feed the Vercel-hosted Next.js app, which serves the visitor over HTTPS; the GitHub contribution calendar and CI badges are fetched by the browser directly](docs/diagrams/Portfolio-Architecture.svg)
 
-[Edit the architecture diagram source](docs/diagrams/architecture.mmd) — a Mermaid flowchart, rendered to this PNG with `mmdc` rather than embedded as a live diagram, since GitHub's pan/zoom overlay for wide Mermaid diagrams otherwise covers part of the graph.
+[Edit the architecture diagram in Excalidraw](docs/diagrams/Porfolio-Architecture.excalidraw).
 
 Four independent flows converge on the Next.js app and diverge back out to the visitor:
 
-- **Deployment** (gray) — pushing to `main` triggers a Vercel build and deploy; it never touches the running request path.
+- **Deployment** (muted, dashed) — pushing to `main` triggers a Vercel build and deploy; it never touches the running request path.
 - **Content** (blue) — Notion is queried server-side, with a 5-minute revalidation window on every Notion-backed route (About, blog, and each project case study).
-- **Observability** (cyan) — the only lane with more than one hop: Prometheus in the [homelab](https://github.com/Jeff-Fontenot/homelab) is federated/scraped by Grafana Alloy, Alloy `remote_write`s the sanitized `portfolio:*` series to Grafana Cloud, and `/api/homelab-metrics` retrieves them server-side — Alloy publishes, the Next.js API reads.
-- **Client-side** (gray, dashed) — the GitHub contribution calendar and each project's CI badge are fetched by the visitor's browser directly from GitHub's public API, bypassing Vercel entirely; no token needed for public data.
+- **Observability** (blue, multi-hop) — the only lane with more than one hop: Prometheus in the [homelab](https://github.com/Jeff-Fontenot/homelab) is federated/scraped by Grafana Alloy, Alloy `remote_write`s the sanitized `portfolio:*` series to Grafana Cloud, and `/api/homelab-metrics` retrieves them server-side — Alloy publishes, the Next.js API reads.
+- **Client-side** (teal, dashed) — the GitHub contribution calendar and each project's CI badge are fetched by the visitor's browser directly from GitHub's public API, bypassing Vercel entirely; no token needed for public data.
 
 The gold edge is the one path every visitor actually sees: Vercel assembles the response and serves it over HTTPS.
 
@@ -129,7 +129,7 @@ npm start
 | `src/lib/` | Notion client, Notion block/image handling, homelab metrics fetching, YouTube helpers |
 | `src/types/` | Shared TypeScript types for homelab metrics, skills, certifications |
 | `public/` | Static assets — certification badges, diplomas, skill icons, resume PDF, logos |
-| `docs/diagrams/` | Editable Mermaid architecture diagram source, rendered to the PNG embedded above |
+| `docs/diagrams/` | Editable Excalidraw architecture diagram source and exported SVG |
 | `docs/images/` | README screenshots, including the PageSpeed captures above |
 
 ## Roadmap
