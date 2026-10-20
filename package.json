@@ -20,7 +20,7 @@
     "react-dom": "19.1.0",
     "react-github-calendar": "^5.0.9",
     "shiki": "^4.4.3",
-    "swiper": "^11.2.10"
+    "swiper": "^14.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
