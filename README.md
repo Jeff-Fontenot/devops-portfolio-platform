@@ -1,4 +1,4 @@
-# Jeff Fontenot — Portfolio
+# Jeff Fontenot — DevOps Portfolio Platform
 
 [![Lighthouse Performance](https://img.shields.io/badge/Performance-99-brightgreen)](docs/images/pagespeed-desktop.png) [![Lighthouse Accessibility](https://img.shields.io/badge/Accessibility-100-brightgreen)](docs/images/pagespeed-desktop.png) [![Lighthouse Best Practices](https://img.shields.io/badge/Best%20Practices-100-brightgreen)](docs/images/pagespeed-desktop.png) [![Lighthouse SEO](https://img.shields.io/badge/SEO-100-brightgreen)](docs/images/pagespeed-desktop.png)
 
@@ -37,7 +37,7 @@ Captured 2026-10-18 against the production deployment.
 
 ![Mobile PageSpeed Insights report: 93 performance, 100 accessibility, 100 best practices, 100 SEO](docs/images/pagespeed-mobile.png)
 
-Scores are a point-in-time Lighthouse measurement, not a guarantee of every visitor's experience; see the [`perf: resolve Lighthouse performance and accessibility findings`](https://github.com/Jeff-Fontenot/portfolio-site/commit/83d9389) commit for the work behind the desktop pass.
+Scores are a point-in-time Lighthouse measurement, not a guarantee of every visitor's experience; see the [`perf: resolve Lighthouse performance and accessibility findings`](https://github.com/Jeff-Fontenot/devops-portfolio-platform/commit/83d9389) commit for the work behind the desktop pass.
 
 ## Features
 
@@ -81,8 +81,8 @@ The Projects section showcases four projects, each with its own repository and R
 ### Installation
 
 ```bash
-git clone https://github.com/Jeff-Fontenot/portfolio-site.git
-cd portfolio-site
+git clone https://github.com/Jeff-Fontenot/devops-portfolio-platform.git
+cd devops-portfolio-platform
 npm install
 ```
 
