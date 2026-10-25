@@ -11,19 +11,22 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-const title = "Jeff Fontenot | Portfolio";
+const title = "Jeff Fontenot | Cloud & DevOps Engineer";
 const description =
-  "A modern portfolio site for Jeff Fontenot. Currently seeking new opportunities in Cloud and DevOps engineering.";
+  "Cloud and DevOps engineer in New Orleans with an active Secret clearance, building Terraform, Kubernetes, CI/CD, and observability projects.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jeff.itodyssey.io"),
   title,
   description,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title,
     description,
     url: "https://jeff.itodyssey.io",
-    siteName: title,
+    siteName: "Jeff Fontenot",
     type: "website",
   },
   twitter: {

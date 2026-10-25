@@ -5,10 +5,9 @@ import dynamic from "next/dynamic";
 import { Github, ArrowRight } from "lucide-react";
 import FadeIn from "./FadeIn";
 
-// Both fetch live data client-side, so their server-rendered skeleton never
-// matches the client output — skip SSR for them entirely rather than fight
-// a hydration mismatch.
-const HomelabTelemetry = dynamic(() => import("./HomelabTelemetry"), { ssr: false });
+// Fetches live data client-side, so its server-rendered skeleton never
+// matches the client output — skip SSR entirely rather than fight a
+// hydration mismatch.
 const GitHubActivity = dynamic(() => import("./GitHubActivity"), { ssr: false });
 
 // Same semantic palette as the homelab telemetry status dots (blue/yellow/gray
@@ -165,10 +164,6 @@ export default function Projects() {
         </div>
 
         <FadeIn delay={projects.length * 0.08} className="w-full">
-          <HomelabTelemetry />
-        </FadeIn>
-
-        <FadeIn delay={(projects.length + 1) * 0.08} className="w-full">
           <GitHubActivity />
         </FadeIn>
       </div>

@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   return {
     title,
     description: project.description,
+    alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
       title,
       description: project.description,
@@ -53,8 +54,29 @@ export default async function ProjectPage({ params }: { params: Params }) {
 
   const blocks = await getProjectBlocks(project.id);
 
+  const projectUrl = `https://jeff.itodyssey.io/projects/${project.slug}`;
+  const creativeWorkJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.description,
+    url: projectUrl,
+    image: project.cover ? `https://jeff.itodyssey.io${notionCoverSrc("project", project.id)}` : undefined,
+    keywords: project.tags.length ? project.tags.join(", ") : undefined,
+    codeRepository: project.githubUrl ?? undefined,
+    author: {
+      "@type": "Person",
+      name: "Jeff Fontenot",
+      url: "https://jeff.itodyssey.io",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkJsonLd) }}
+      />
       <Header />
       <main>
         {/* Centered mini-hero */}

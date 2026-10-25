@@ -164,29 +164,6 @@ export default function Education() {
             </div>
           </FadeIn>
         </div>
-
-        {/* Homelab Diagram */}
-        <FadeIn delay={0.15} className="w-full mt-6">
-          <div className="glass-container p-6 sm:p-8">
-            <h3 className="text-2xl font-bold text-white mb-3">Homelab Architecture</h3>
-            <p className="text-white/70 leading-relaxed text-sm max-w-3xl mb-6">
-              A visual breakdown of how it all connects. From my daily-driver laptop, over a
-              private Tailscale network, to the Proxmox host running my services, desktops, and
-              Kubernetes lab.
-            </p>
-            <div className="overflow-hidden rounded-xl ring-1 ring-white/10">
-              <picture>
-                <source media="(min-width: 768px)" srcSet="/diagrams/homelab-architecture-wide.svg" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/diagrams/homelab-architecture-tall.svg"
-                  alt="Homelab architecture diagram"
-                  className="h-auto w-full"
-                />
-              </picture>
-            </div>
-          </div>
-        </FadeIn>
       </div>
 
       {/* Lightbox */}

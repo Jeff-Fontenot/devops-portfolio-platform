@@ -1,21 +1,49 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Skills from "@/components/Skills";
+import { skills } from "@/components/skills";
 import Certifications from "@/components/Certifications";
 import Projects from "@/components/Projects";
+import HomelabOverview from "@/components/HomelabOverview";
 import Experience from "@/components/Experience";
 import Education from "@/components/Education";
 import MediaChannels from "@/components/MediaChannels";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Jeff Fontenot",
+  url: "https://jeff.itodyssey.io",
+  image: "https://jeff.itodyssey.io/opengraph-image.png",
+  jobTitle: "Cloud & DevOps Engineer",
+  email: "mailto:jeff@itodyssey.io",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "New Orleans",
+    addressRegion: "LA",
+    addressCountry: "US",
+  },
+  sameAs: [
+    "https://www.linkedin.com/in/jeff-fontenot",
+    "https://github.com/Jeff-Fontenot",
+  ],
+  knowsAbout: skills.map((skill) => skill.name),
+};
+
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       <Header />
       <main className="min-h-screen">
         <Hero />
         <Projects />
+        <HomelabOverview />
         <Experience />
         <Skills />
         <Certifications />

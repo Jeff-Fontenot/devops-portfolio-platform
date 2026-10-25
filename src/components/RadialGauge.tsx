@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { animate, useInView } from "framer-motion";
 import type { HomelabStatus } from "@/types/homelab";
 
 // Used for the overall-health dot/label in HomelabTelemetry's header — a
@@ -60,14 +61,37 @@ export default function RadialGauge({
   value: number | null;
 }) {
   const rawId = useId().replace(/:/g, "");
-  const clamped = value === null ? 0 : Math.min(100, Math.max(0, value));
+  const gradientId = `gauge-${rawId}`;
+
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(wrapRef, { once: true, amount: 0.6 });
+  const [display, setDisplay] = useState(0);
+  const hasRevealedRef = useRef(false);
+  const displayRef = useRef(0);
+  displayRef.current = display;
+
+  useEffect(() => {
+    if (!inView || value === null) return;
+    const target = Math.min(100, Math.max(0, value));
+    const isFirstReveal = !hasRevealedRef.current;
+    const from = isFirstReveal ? 0 : displayRef.current;
+    hasRevealedRef.current = true;
+    const controls = animate(from, target, {
+      duration: isFirstReveal ? 1.6 : 0.8,
+      delay: isFirstReveal ? 0.25 : 0,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: setDisplay,
+    });
+    return () => controls.stop();
+  }, [inView, value]);
+
+  const clamped = display;
   const valueLength = (clamped / 100) * TRACK_LENGTH;
   const tier = tierFor(clamped);
-  const gradientId = `gauge-${tier}-${rawId}`;
   const glow = tier === "critical" ? "#e2534f" : tier === "warning" ? "#ffd700" : "#24aff5";
 
   return (
-    <div className="flex flex-col items-center gap-2.5">
+    <div ref={wrapRef} className="flex flex-col items-center gap-2.5">
       <svg
         width={SIZE}
         height={SIZE}
@@ -112,7 +136,7 @@ export default function RadialGauge({
               style={{
                 filter: "blur(6px)",
                 opacity: 0.22,
-                transition: "stroke-dasharray 600ms cubic-bezier(0.16, 1, 0.3, 1), stroke 300ms ease",
+                transition: "stroke 300ms ease",
               }}
             />
             <circle
@@ -125,7 +149,6 @@ export default function RadialGauge({
               strokeLinecap="round"
               strokeDasharray={`${valueLength} ${CIRCUMFERENCE}`}
               transform={`rotate(${START_ROTATE} ${SIZE / 2} ${SIZE / 2})`}
-              style={{ transition: "stroke-dasharray 600ms cubic-bezier(0.16, 1, 0.3, 1)" }}
             />
           </>
         )}
@@ -138,7 +161,7 @@ export default function RadialGauge({
           className="fill-white text-[26px] font-bold"
           style={{ filter: `drop-shadow(0 0 4px ${glow}40)` }}
         >
-          {value === null ? "—" : `${Math.round(value)}%`}
+          {value === null ? "—" : `${Math.round(display)}%`}
         </text>
       </svg>
       <span className="text-sm font-medium text-white/60">{label}</span>

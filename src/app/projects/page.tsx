@@ -14,6 +14,7 @@ const description = "A portfolio index of cloud, DevOps, and automation projects
 export const metadata = {
   title,
   description,
+  alternates: { canonical: "/projects" },
   openGraph: { title, description },
   twitter: { card: "summary_large_image", title, description },
 };

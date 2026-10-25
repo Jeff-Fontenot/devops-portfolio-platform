@@ -14,6 +14,7 @@ const description = "Insights from an endless journey of growth and discovery.";
 export const metadata = {
   title,
   description,
+  alternates: { canonical: "/blog" },
   openGraph: { title, description },
   twitter: { card: "summary_large_image", title, description },
 };

@@ -138,11 +138,18 @@ export default function HomelabTelemetry() {
           <h3 className="text-lg font-semibold text-white">Live Homelab Telemetry</h3>
         </div>
         <div className="flex items-center gap-2 text-sm text-white/50">
-          <span
-            className={`h-2 w-2 rounded-full ${isLive ? "animate-pulse" : ""}`}
-            style={{ backgroundColor: STATUS_COLORS[displayStatus] }}
-            aria-hidden
-          />
+          <span className="relative flex h-2 w-2" aria-hidden>
+            {isLive && (
+              <span
+                className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60"
+                style={{ backgroundColor: STATUS_COLORS[displayStatus] }}
+              />
+            )}
+            <span
+              className="relative inline-flex h-2 w-2 rounded-full"
+              style={{ backgroundColor: STATUS_COLORS[displayStatus] }}
+            />
+          </span>
           <span>
             {isLoading ? "Connecting…" : `${STATUS_LABEL[displayStatus]} · ${formatAgo(data?.updatedAt ?? null, now)}`}
           </span>

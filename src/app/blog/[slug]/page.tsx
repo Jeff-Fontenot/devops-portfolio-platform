@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: { params: Params }) {
   return {
     title,
     description: post.description,
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title,
       description: post.description,
@@ -52,8 +53,28 @@ export default async function BlogPostPage({ params }: { params: Params }) {
 
   const blocks = await getBlocks(post.id);
 
+  const postUrl = `https://jeff.itodyssey.io/blog/${post.slug}`;
+  const blogPostingJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    url: postUrl,
+    image: post.cover ? `https://jeff.itodyssey.io${notionCoverSrc("blog", post.id)}` : undefined,
+    author: {
+      "@type": "Person",
+      name: "Jeff Fontenot",
+      url: "https://jeff.itodyssey.io",
+    },
+  };
+
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingJsonLd) }}
+    />
     <Header />
     <main>
       {/* Centered mini-hero */}
