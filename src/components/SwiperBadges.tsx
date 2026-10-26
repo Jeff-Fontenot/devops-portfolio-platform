@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
-import { BadgeCheck, ChevronLeft, ChevronRight, Grid3X3, Layers } from "lucide-react";
+import { BadgeCheck, Grid3X3, Layers } from "lucide-react";
 
 // Import Swiper styles
 import 'swiper/css';
