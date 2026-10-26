@@ -50,7 +50,7 @@ export default function Hero() {
               variants={item}
               className="py-4 font-extrabold tracking-tight leading-[1.05]"
             >
-              <span className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold uppercase tracking-[0.15em] text-white/70">
+              <span className="mb-3 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-x-2 sm:gap-y-1 text-sm font-semibold uppercase tracking-[0.15em] text-white/70">
                 <span className="inline-flex items-center gap-2 whitespace-nowrap">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75" />
@@ -58,7 +58,9 @@ export default function Hero() {
                   </span>
                   Cloud &amp; DevOps Engineer
                 </span>
-                <span aria-hidden="true">&middot;</span>
+                {/* Below sm, these two stack on their own lines, so the
+                    separator is dropped rather than left dangling alone. */}
+                <span aria-hidden="true" className="hidden sm:inline">&middot;</span>
                 <span className="whitespace-nowrap">Active Secret Clearance</span>
               </span>
               <span className="block text-white text-[clamp(1.9rem,9.5vw,4.5rem)] md:text-[clamp(2.2rem,5vw,7rem)]">
