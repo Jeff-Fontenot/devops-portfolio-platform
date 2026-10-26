@@ -101,14 +101,10 @@ export default function Education() {
     <section className="py-20 md:py-28">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <FadeIn className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+        <FadeIn className="text-center mb-10">
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             Continuous <span className="gradient-text">Learning</span>
           </h2>
-          <p className="text-lg text-white/60 leading-relaxed max-w-2xl mx-auto">
-            Combining formal education with hands-on experimentation and emerging technology
-            exploration.
-          </p>
         </FadeIn>
 
         {/* Main Content Layout - Two Equal Columns */}

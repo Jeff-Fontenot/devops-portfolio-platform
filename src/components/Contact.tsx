@@ -7,14 +7,9 @@ export default function Contact() {
     <section className="py-20 md:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
         <FadeIn>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-10">
             Let&apos;s <span className="gradient-text">Connect</span>
           </h2>
-          <p className="text-lg text-white/60 leading-relaxed max-w-2xl mx-auto mb-10">
-            Based in New Orleans, LA. Open to remote roles in
-            <br />
-            <span className="whitespace-nowrap">Cloud, DevOps, and Platform Engineering.</span>
-          </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href="mailto:jeff@itodyssey.io" className="btn-primary px-6 py-3">

@@ -84,14 +84,10 @@ export default function Projects() {
     <section className="py-20 md:py-28">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <FadeIn className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+        <FadeIn className="text-center mb-10">
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             Featured <span className="gradient-text">Projects</span>
           </h2>
-          <p className="text-lg text-white/60 leading-relaxed max-w-2xl mx-auto">
-            A selection of personal and professional projects that highlight my skills in
-            Cloud Computing, DevOps, and Platform Engineering.
-          </p>
         </FadeIn>
 
         {/* Even 2x2 grid */}

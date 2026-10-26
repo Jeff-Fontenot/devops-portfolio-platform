@@ -6,13 +6,10 @@ export default function Skills() {
     <section className="py-20 md:py-28">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <FadeIn className="text-center mb-16">
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+        <FadeIn className="text-center mb-10">
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             Technical <span className="gradient-text">Skills</span>
           </h2>
-          <p className="text-lg text-white/60 leading-relaxed max-w-2xl mx-auto">
-            The tools and technologies I use to build, automate, and monitor infrastructure.
-          </p>
         </FadeIn>
 
         {/* Skills Grid */}

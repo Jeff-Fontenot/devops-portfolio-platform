@@ -140,15 +140,11 @@ export default function SwiperBadges({ items }: { items: CertItem[] }) {
   return (
     <section className="relative mx-auto w-full max-w-6xl px-8">
       {/* Header */}
-      <div className="flex flex-col items-center text-center mb-16">
-        <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+      <div className="flex flex-col items-center text-center mb-10">
+        <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
           Industry{' '}
           <span className="gradient-text">Certifications</span>
         </h2>
-        <p className="text-lg text-white/60 leading-relaxed max-w-2xl">
-          A showcase of my commitment to continuous learning and professional growth through
-          industry-recognized certifications.
-        </p>
       </div>
 
       {/* Toggle Button - Centered below header */}
