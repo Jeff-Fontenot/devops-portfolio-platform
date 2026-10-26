@@ -12,7 +12,7 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mb-10 max-w-xl text-lg text-white/60">
-            Open to Cloud, DevOps, and Platform Engineering roles — remote friendly, with an
+            Open to Cloud, DevOps, and Platform Engineering roles. Remote friendly, with an
             active Secret security clearance.
           </p>
 

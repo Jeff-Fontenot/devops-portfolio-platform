@@ -27,7 +27,7 @@ export const projects: ProjectCard[] = [
     title: "Cloud-Native Homelab",
     status: "Operational",
     description:
-      "Runs a self-hosted platform — a three-node Kubernetes cluster alongside Docker Compose services — behind private networking, TLS routing, and centralized logging. Selected Prometheus and Kubernetes telemetry streams live to this portfolio through a Grafana Cloud pipeline.",
+      "Runs a self-hosted platform (a three-node Kubernetes cluster alongside Docker Compose services) behind private networking, TLS routing, and centralized logging. Selected Prometheus and Kubernetes telemetry streams live to this portfolio through a Grafana Cloud pipeline.",
     tech: ["Linux", "Proxmox", "K3S", "Docker", "Traefik", "Tailscale", "Prometheus", "Grafana", "Git", "GitHub Actions"],
     repoUrl: "https://github.com/Jeff-Fontenot/homelab",
     caseStudySlug: "cloud-native-homelab",
