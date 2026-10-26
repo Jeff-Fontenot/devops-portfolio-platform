@@ -16,6 +16,9 @@ import { Skill } from "@/types/skills";
 //   curl https://api.iconify.design/selfhst/microsoft-entra-id.svg -o public/skills/activedirectory.svg
 //   curl https://api.iconify.design/devicon/grafanaloki.svg -o public/skills/loki.svg
 // (activedirectory.svg uses Microsoft's current Entra ID mark, the closest official identity icon.)
+//
+// aws-light.svg is aws.svg with its dark navy wordmark (#252f3e) recolored to a light
+// gray (#e5e7eb) — the original is unreadable on this site's dark tiles.
 
 export const skills: Skill[] = [
   { name: "Docker", icon: "/skills/docker.svg" },
@@ -33,7 +36,7 @@ export const skills: Skill[] = [
   { name: "Azure", icon: "/skills/azure.svg" },
 //  { name: "Active Directory", icon: "/skills/activedirectory.svg" },
   { name: "Linux", icon: "/skills/linux.svg" },
-  { name: "AWS", icon: "/skills/aws.svg" },
+  { name: "AWS", icon: "/skills/aws-light.svg" },
 
   // Not ready to claim these yet — uncomment as confidence builds.
   // { name: "Ansible", icon: "/skills/ansible.svg" },
