@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Params }) {
   const project = await getProjectBySlug(params.slug);
   if (!project) return {};
-  const title = `${project.title} | Projects`;
+  const title = `${project.title} | Jeff Fontenot`;
   return {
     title,
     description: project.description,
