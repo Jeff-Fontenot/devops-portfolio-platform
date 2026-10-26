@@ -54,7 +54,7 @@ export const projects: ProjectCard[] = [
     status: "Completed",
     description:
       "Recovers a containerized Flask/PostgreSQL application from on-prem failure to running AWS infrastructure with a single terraform apply, validated at a 3:55 RTO against roughly a 1-hour RPO. Hourly backups ship automatically to S3 and restore through an IAM instance profile with no manual steps.",
-    tech: ["Terraform", "AWS", "EC2", "S3", "Docker", "PostgreSQL", "Flask"],
+    tech: ["Terraform", "AWS", "EC2", "S3", "Docker", "PostgreSQL", "Flask", "Bash"],
     repoUrl: "https://github.com/Jeff-Fontenot/d342-hybrid-cloud-disaster-recovery",
     caseStudySlug: "Hybrid-Cloud-Disaster-Recovery",
   },
