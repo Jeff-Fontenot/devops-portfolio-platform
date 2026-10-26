@@ -76,7 +76,7 @@ export default function Hero() {
               variants={item}
               className="text-base md:text-lg text-white/80 leading-relaxed max-w-lg"
             >
-              I'm Jeff. I build infrastructure, automate the repetitive parts, and document what I learn along the way. The best way to understand a system? Get your hands on it.
+              I&apos;m Jeff. I build infrastructure, automate the repetitive parts, and document what I learn along the way. The best way to understand a system? Get your hands on it.
             </motion.p>
 
             {/* CTA Buttons */}

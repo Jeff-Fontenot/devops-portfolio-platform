@@ -28,7 +28,7 @@ async function ensureCover(page: any): Promise<string | null> {
   
   // Last resort: fetch full page
   const full = await notion.pages.retrieve({ page_id: page.id });
-  // @ts-ignore
+  // @ts-expect-error -- Notion SDK's PageObjectResponse union doesn't expose `cover` directly
   const cover = full.cover?.external?.url ?? full.cover?.file?.url ?? null;
   return cover;
 }
