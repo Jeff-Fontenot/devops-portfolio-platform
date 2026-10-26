@@ -5,15 +5,23 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import FadeIn from "./FadeIn";
 import { skills } from "./skills";
-import { projectsForSkill } from "@/lib/skill-projects";
+import { projectsForSkill, type SkillSourceProject } from "@/lib/skill-projects";
 import type { Skill } from "@/types/skills";
 
-function SkillTile({ skill, delay }: { skill: Skill; delay: number }) {
+function SkillTile({
+  skill,
+  delay,
+  projects,
+}: {
+  skill: Skill;
+  delay: number;
+  projects: SkillSourceProject[];
+}) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const popoverId = useId();
   const prefersReducedMotion = useReducedMotion();
-  const usedIn = projectsForSkill(skill);
+  const usedIn = projectsForSkill(skill, projects);
 
   return (
     <FadeIn delay={delay}>
@@ -73,7 +81,7 @@ function SkillTile({ skill, delay }: { skill: Skill; delay: number }) {
                 </ul>
               ) : (
                 <p className="px-2 py-1.5 text-sm text-white/50">
-                  Not yet used in a featured project.
+                  Not yet used in a project with a case study.
                 </p>
               )}
             </motion.div>
@@ -84,7 +92,7 @@ function SkillTile({ skill, delay }: { skill: Skill; delay: number }) {
   );
 }
 
-export default function Skills() {
+export default function Skills({ projects }: { projects: SkillSourceProject[] }) {
   return (
     <section className="py-20 md:py-28">
       <div className="mx-auto flex max-w-6xl flex-col items-center px-4 sm:px-6 lg:px-8">
@@ -99,7 +107,7 @@ export default function Skills() {
             even rows (5x3, 3x5) instead of leaving one stranded alone. */}
         <div className="grid w-full grid-cols-3 justify-items-center gap-4 md:grid-cols-5">
           {skills.map((skill, i) => (
-            <SkillTile key={skill.name} skill={skill} delay={i * 0.04} />
+            <SkillTile key={skill.name} skill={skill} delay={i * 0.04} projects={projects} />
           ))}
         </div>
       </div>
