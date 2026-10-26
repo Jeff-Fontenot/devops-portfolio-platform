@@ -124,7 +124,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                        prose-blockquote:border-yellow-400/40
                        prose-hr:border-white/10"
           >
-            <NotionContent blocks={blocks} source="blog" />
+            <NotionContent blocks={blocks} source="blog" pageTitle={post.title} />
           </div>
         </article>
 

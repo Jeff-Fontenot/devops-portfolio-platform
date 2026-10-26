@@ -48,7 +48,7 @@ export default async function AboutPage() {
                            prose-blockquote:border-yellow-400/40
                            prose-hr:border-white/10"
               >
-                <NotionContent blocks={blocks} />
+                <NotionContent blocks={blocks} source="blog" pageTitle="About" />
               </div>
             </article>
           )}

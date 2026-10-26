@@ -22,18 +22,28 @@ export interface NotionBlock {
   [key: string]: unknown;
 }
 
-function ListItem({ block, source }: { block: NotionBlock; source: Source }) {
+function ListItem({
+  block,
+  source,
+  pageTitle,
+}: {
+  block: NotionBlock;
+  source: Source;
+  pageTitle: string;
+}) {
   const data = block[block.type] as Record<string, unknown>;
   const children = (block.children as NotionBlock[]) || [];
   return (
     <li>
       {(data?.rich_text as NotionRichText[])?.map((t, i) => <Span key={i} t={t} />)}
-      {children.length > 0 && <NotionContent blocks={children} source={source} />}
+      {children.length > 0 && (
+        <NotionContent blocks={children} source={source} pageTitle={pageTitle} />
+      )}
     </li>
   );
 }
 
-function renderBlock(b: NotionBlock, source: Source) {
+function renderBlock(b: NotionBlock, source: Source, pageTitle: string) {
   const type = b.type;
   const data = b[type] as Record<string, unknown>;
 
@@ -94,10 +104,11 @@ function renderBlock(b: NotionBlock, source: Source) {
           ? (imageData?.external as { url?: string })?.url
           : notionBlockImageSrc(source, b.id);
       const caption = (imageData?.caption as NotionRichText[])?.[0]?.plain_text;
+      const alt = caption || `${pageTitle} screenshot`;
       return (
         <figure key={b.id}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={caption || "image"} />
+          <img src={src} alt={alt} />
           {caption && <figcaption>{caption}</figcaption>}
         </figure>
       );
@@ -112,7 +123,7 @@ function renderBlock(b: NotionBlock, source: Source) {
           className="not-prose my-6 grid gap-6"
           style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
         >
-          <NotionContent blocks={columns} source={source} />
+          <NotionContent blocks={columns} source={source} pageTitle={pageTitle} />
         </div>
       );
     }
@@ -120,7 +131,7 @@ function renderBlock(b: NotionBlock, source: Source) {
       const children = (b.children as NotionBlock[]) || [];
       return (
         <div key={b.id} className="prose prose-invert min-w-0 max-w-none">
-          <NotionContent blocks={children} source={source} />
+          <NotionContent blocks={children} source={source} pageTitle={pageTitle} />
         </div>
       );
     }
@@ -134,7 +145,7 @@ function renderBlock(b: NotionBlock, source: Source) {
             ))}
           </summary>
           <div className="mt-2">
-            <NotionContent blocks={children} source={source} />
+            <NotionContent blocks={children} source={source} pageTitle={pageTitle} />
           </div>
         </details>
       );
@@ -147,9 +158,11 @@ function renderBlock(b: NotionBlock, source: Source) {
 export default function NotionContent({
   blocks,
   source = "blog",
+  pageTitle = "",
 }: {
   blocks: NotionBlock[];
   source?: Source;
+  pageTitle?: string;
 }) {
   const elements: React.ReactNode[] = [];
   let i = 0;
@@ -171,14 +184,14 @@ export default function NotionContent({
       elements.push(
         <ListTag key={group[0].id}>
           {group.map((item) => (
-            <ListItem key={item.id} block={item} source={source} />
+            <ListItem key={item.id} block={item} source={source} pageTitle={pageTitle} />
           ))}
         </ListTag>
       );
       continue;
     }
 
-    elements.push(renderBlock(block, source));
+    elements.push(renderBlock(block, source, pageTitle));
     i++;
   }
 
