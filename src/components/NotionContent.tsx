@@ -1,6 +1,10 @@
-// Shared renderer for basic Notion block content, used by the blog and the About page.
+// Shared renderer for basic Notion block content, used by the blog, case
+// studies, and the About page.
 
 import CodeBlock from "./CodeBlock";
+import { notionBlockImageSrc } from "@/lib/notion-image";
+
+type Source = "blog" | "project";
 
 export interface NotionRichText {
   plain_text: string;
@@ -18,18 +22,18 @@ export interface NotionBlock {
   [key: string]: unknown;
 }
 
-function ListItem({ block }: { block: NotionBlock }) {
+function ListItem({ block, source }: { block: NotionBlock; source: Source }) {
   const data = block[block.type] as Record<string, unknown>;
   const children = (block.children as NotionBlock[]) || [];
   return (
     <li>
       {(data?.rich_text as NotionRichText[])?.map((t, i) => <Span key={i} t={t} />)}
-      {children.length > 0 && <NotionContent blocks={children} />}
+      {children.length > 0 && <NotionContent blocks={children} source={source} />}
     </li>
   );
 }
 
-function renderBlock(b: NotionBlock) {
+function renderBlock(b: NotionBlock, source: Source) {
   const type = b.type;
   const data = b[type] as Record<string, unknown>;
 
@@ -82,9 +86,13 @@ function renderBlock(b: NotionBlock) {
     case "image": {
       const imageData = data as Record<string, unknown>;
       const imgType = imageData?.type as string;
-      const src = imgType === "external"
-        ? (imageData?.external as { url?: string })?.url
-        : (imageData?.file as { url?: string })?.url;
+      // "file" images are Notion-hosted presigned S3 URLs that expire ~1hr
+      // after being issued, so they're routed through the proxy to always
+      // get a fresh one. "external" images are stable and left alone.
+      const src =
+        imgType === "external"
+          ? (imageData?.external as { url?: string })?.url
+          : notionBlockImageSrc(source, b.id);
       const caption = (imageData?.caption as NotionRichText[])?.[0]?.plain_text;
       return (
         <figure key={b.id}>
@@ -104,7 +112,7 @@ function renderBlock(b: NotionBlock) {
           className="not-prose my-6 grid gap-6"
           style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
         >
-          <NotionContent blocks={columns} />
+          <NotionContent blocks={columns} source={source} />
         </div>
       );
     }
@@ -112,7 +120,7 @@ function renderBlock(b: NotionBlock) {
       const children = (b.children as NotionBlock[]) || [];
       return (
         <div key={b.id} className="prose prose-invert min-w-0 max-w-none">
-          <NotionContent blocks={children} />
+          <NotionContent blocks={children} source={source} />
         </div>
       );
     }
@@ -126,7 +134,7 @@ function renderBlock(b: NotionBlock) {
             ))}
           </summary>
           <div className="mt-2">
-            <NotionContent blocks={children} />
+            <NotionContent blocks={children} source={source} />
           </div>
         </details>
       );
@@ -136,7 +144,13 @@ function renderBlock(b: NotionBlock) {
   }
 }
 
-export default function NotionContent({ blocks }: { blocks: NotionBlock[] }) {
+export default function NotionContent({
+  blocks,
+  source = "blog",
+}: {
+  blocks: NotionBlock[];
+  source?: Source;
+}) {
   const elements: React.ReactNode[] = [];
   let i = 0;
 
@@ -157,14 +171,14 @@ export default function NotionContent({ blocks }: { blocks: NotionBlock[] }) {
       elements.push(
         <ListTag key={group[0].id}>
           {group.map((item) => (
-            <ListItem key={item.id} block={item} />
+            <ListItem key={item.id} block={item} source={source} />
           ))}
         </ListTag>
       );
       continue;
     }
 
-    elements.push(renderBlock(block));
+    elements.push(renderBlock(block, source));
     i++;
   }
 

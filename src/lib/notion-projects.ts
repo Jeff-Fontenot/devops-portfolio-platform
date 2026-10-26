@@ -99,6 +99,16 @@ export async function getFreshProjectCover(pageId: string): Promise<string | nul
   return extractCover(page);
 }
 
+// Same expiry problem as covers, but for inline "image" blocks within a
+// case study's body content.
+export async function getFreshProjectBlockImage(blockId: string): Promise<string | null> {
+  if (!isConfigured) return null;
+  const block: any = await notion.blocks.retrieve({ block_id: blockId });
+  if (block?.type !== "image") return null;
+  const image = block.image;
+  return image?.file?.url ?? image?.external?.url ?? null;
+}
+
 export async function getProjectBlocks(pageId: string) {
   if (!isConfigured) return [];
   return fetchBlocksRecursive(notion, pageId);

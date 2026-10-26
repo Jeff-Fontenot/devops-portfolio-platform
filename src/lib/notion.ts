@@ -133,6 +133,15 @@ export async function getFreshPostCover(pageId: string): Promise<string | null> 
   return ensureCover(page);
 }
 
+// Same expiry problem as covers, but for inline "image" blocks within a
+// post's body content.
+export async function getFreshBlockImage(blockId: string): Promise<string | null> {
+  const block: any = await notion.blocks.retrieve({ block_id: blockId });
+  if (block?.type !== "image") return null;
+  const image = block.image;
+  return image?.file?.url ?? image?.external?.url ?? null;
+}
+
 export async function getBlocks(pageId: string) {
   return fetchBlocksRecursive(notion, pageId);
 }
