@@ -26,9 +26,6 @@ function ProjectsHero() {
         <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight text-white">
           Case <span className="gradient-text">Studies</span>
         </h1>
-        <p className="mt-3 max-w-2xl text-white/60">
-          Write-ups, screenshots, and links for everything I&apos;ve built.
-        </p>
       </div>
     </section>
   );
