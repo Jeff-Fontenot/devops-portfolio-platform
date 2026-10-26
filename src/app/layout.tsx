@@ -47,6 +47,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://api.github.com" />
+        <link rel="preconnect" href="https://github-contributions-api.jogruber.de" />
+      </head>
       <body className="font-sans antialiased">{children}</body>
     </html>
   );

@@ -29,6 +29,7 @@ export default function Hero() {
           alt="Jeff Fontenot"
           fill
           priority
+          fetchPriority="high"
           className="object-cover opacity-25 filter grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#08090d] via-[#08090d]/70 to-transparent" />
@@ -119,6 +120,7 @@ export default function Hero() {
                 alt="Jeff Fontenot"
                 fill
                 priority
+                fetchPriority="high"
                 className="object-cover rounded-2xl opacity-80 filter grayscale shadow-2xl"
                 style={{
                   maskImage: "linear-gradient(to bottom, black 72%, transparent 100%)",

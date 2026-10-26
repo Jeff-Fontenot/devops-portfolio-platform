@@ -114,11 +114,23 @@ export default function Projects() {
                       <div className="flex shrink-0 items-center gap-1.5">
                         {project.ci && (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={project.ci.badge} alt="CI build status" className="h-5 shrink-0" />
+                          <img
+                            src={project.ci.badge}
+                            alt="CI build status"
+                            width={90}
+                            height={20}
+                            className="h-5 w-auto shrink-0"
+                          />
                         )}
                         {project.cd && (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={project.cd.badge} alt="CD deployment status" className="h-5 shrink-0" />
+                          <img
+                            src={project.cd.badge}
+                            alt="CD deployment status"
+                            width={94}
+                            height={20}
+                            className="h-5 w-auto shrink-0"
+                          />
                         )}
                       </div>
                     )}

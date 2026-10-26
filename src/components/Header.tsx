@@ -60,8 +60,8 @@ export default function Header() {
           <Image
             src="/logo-name-lockup.png"
             alt="Jeff Fontenot"
-            width={2172}
-            height={724}
+            width={624}
+            height={208}
             priority
             className="h-[88px] md:h-[104px] w-auto transition-transform duration-300 hover:scale-105"
           />

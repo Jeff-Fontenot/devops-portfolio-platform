@@ -37,6 +37,8 @@ export default function HomelabOverview() {
               <img
                 src="/diagrams/homelab-architecture.svg"
                 alt="Homelab architecture diagram"
+                width={1299}
+                height={915}
                 className="h-auto w-full"
                 loading="lazy"
               />
