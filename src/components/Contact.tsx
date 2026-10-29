@@ -12,8 +12,11 @@ export default function Contact() {
           </h2>
 
           <p className="mx-auto mb-10 max-w-xl text-lg text-white/60">
-            Open to Cloud, DevOps, and Platform Engineering roles. Remote friendly, with an
-            active Secret security clearance.
+            Open to Cloud, DevOps, and Platform Engineering roles.{" "}
+            <br className="hidden sm:block" />
+            New Orleans based. Remote friendly.{" "}
+            <br className="hidden sm:block" />
+            Active Secret security clearance.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
