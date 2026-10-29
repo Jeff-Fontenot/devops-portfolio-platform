@@ -9,20 +9,25 @@ import {
   useReducedMotion,
   type AnimationPlaybackControls,
 } from "framer-motion";
+import {
+  CQW_PER_UNIT,
+  DETAIL_FONT,
+  DETAIL_GAP_CQW,
+  GRID_H,
+  GRID_W,
+  NAME_FONT,
+  NAME_GAP_CQW,
+  TILE,
+  fontCss,
+  pointOnCurve,
+  wireBetween,
+  type Curve,
+} from "./flow-layout";
 
-// Node coordinates live on a fixed 160x100 grid. The container holds the same
-// 16:10 aspect ratio, so the grid scales uniformly at any rendered size. Tiles,
-// the backdrop and the trail are sized in container units (cqw) against the
-// same grid, so the whole drawing scales together like an SVG would, while the
-// labels stay real HTML text with a readable minimum size.
-const GRID_W = 160;
-const GRID_H = 100;
-const CQW_PER_UNIT = 100 / GRID_W;
-
-// Tile edge length, in grid units.
-const TILE = 14;
-// Gap between a tile's border and the start or end of its wires.
-const WIRE_GAP = 1.5;
+// Tiles, the backdrop and the trail are sized in container units (cqw)
+// against the grid in flow-layout.ts, so the whole drawing scales together
+// like an SVG would, while the labels stay real HTML text with a readable
+// minimum size.
 
 const LOOP_SECONDS = 6;
 // Share of each step spent travelling; the rest is the pause at the arrival.
@@ -60,29 +65,7 @@ export type FlowDiagramData = {
   description?: string;
 };
 
-type Point = { x: number; y: number };
-type Curve = [Point, Point, Point, Point];
 type Wire = FlowEdge & { key: string; curve: Curve; arrow: string; step: number };
-
-// Wires leave and enter tiles on the sides facing each other, along the
-// dominant axis, so a fan-in converges on one side of the target tile.
-function wireBetween(a: Point, b: Point): Curve {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const inset = TILE / 2 + WIRE_GAP;
-  if (Math.abs(dx) >= Math.abs(dy)) {
-    const s = Math.sign(dx);
-    const p0 = { x: a.x + s * inset, y: a.y };
-    const p3 = { x: b.x - s * inset, y: b.y };
-    const mid = (p3.x - p0.x) / 2;
-    return [p0, { x: p0.x + mid, y: p0.y }, { x: p3.x - mid, y: p3.y }, p3];
-  }
-  const s = Math.sign(dy);
-  const p0 = { x: a.x, y: a.y + s * inset };
-  const p3 = { x: b.x, y: b.y - s * inset };
-  const mid = (p3.y - p0.y) / 2;
-  return [p0, { x: p0.x, y: p0.y + mid }, { x: p3.x, y: p3.y - mid }, p3];
-}
 
 function arrowHead([, , p2, p3]: Curve): string {
   const len = Math.hypot(p3.x - p2.x, p3.y - p2.y) || 1;
@@ -93,18 +76,6 @@ function arrowHead([, , p2, p3]: Curve): string {
   const bx = p3.x - ux * back;
   const by = p3.y - uy * back;
   return `M ${bx - uy * wing} ${by + ux * wing} L ${p3.x} ${p3.y} L ${bx + uy * wing} ${by - ux * wing}`;
-}
-
-function pointOnCurve([p0, p1, p2, p3]: Curve, t: number): Point {
-  const u = 1 - t;
-  const a = u * u * u;
-  const b = 3 * u * u * t;
-  const c = 3 * u * t * t;
-  const d = t * t * t;
-  return {
-    x: a * p0.x + b * p1.x + c * p2.x + d * p3.x,
-    y: a * p0.y + b * p1.y + c * p2.y + d * p3.y,
-  };
 }
 
 function curvePath([p0, p1, p2, p3]: Curve): string {
@@ -292,6 +263,7 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
             className="group/flowgroup absolute rounded-[1.6cqw] border border-dashed border-white/[0.13] transition-colors duration-500 data-[active]:border-[rgba(253,224,71,0.35)]"
             style={{ left: pct(g.x, GRID_W), top: pct(g.y, GRID_H), width: pct(g.w, GRID_W), height: pct(g.h, GRID_H) }}
           >
+            {/* Size, inset and tracking mirror GROUP_* in flow-layout.ts. */}
             <span
               className="absolute left-[2cqw] top-0 -translate-y-1/2 bg-[#0b0d13] px-[0.8cqw] font-mono text-[10px] uppercase leading-none tracking-[0.06em] text-white/40 transition-colors duration-500 group-data-[active]/flowgroup:text-[#fde047]/80 @sm:tracking-[0.16em]"
             >
@@ -377,18 +349,22 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
                 className="pointer-events-none absolute inset-[-1px] rounded-[inherit] border border-[#fde047] opacity-0 group-data-[active]/node:animate-[flow-ping_0.9s_ease-out]"
               />
             </div>
-            <div className="absolute left-1/2 top-full mt-[1.1cqw] flex -translate-x-1/2 flex-col items-center gap-[0.5cqw] whitespace-nowrap font-mono leading-none">
+            <div
+              className="absolute left-1/2 top-full flex -translate-x-1/2 flex-col items-center whitespace-nowrap font-mono leading-none"
+              style={{ marginTop: `${NAME_GAP_CQW}cqw`, gap: `${DETAIL_GAP_CQW}cqw` }}
+            >
+              {/* Tracking mirrors NAME_TRACKING in flow-layout.ts. */}
               <span
                 className={`font-medium uppercase tracking-[0.04em] transition-colors duration-300 group-data-[active]/node:text-[#fde047] @sm:tracking-[0.12em] ${
                   planned ? "text-white/50" : "text-white/80"
                 }`}
-                style={{ fontSize: "clamp(10px, 2cqw, 11px)" }}
+                style={{ fontSize: fontCss(NAME_FONT) }}
               >
                 {text}
               </span>
               {detail && (
                 // Hidden on phones, and on any diagram too narrow to fit them.
-                <span className="hidden text-white/60 sm:@sm:block" style={{ fontSize: "clamp(7px, 1.55cqw, 9px)" }}>
+                <span className="hidden text-white/60 sm:@sm:block" style={{ fontSize: fontCss(DETAIL_FONT) }}>
                   {detail}
                 </span>
               )}

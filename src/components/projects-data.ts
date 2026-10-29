@@ -53,8 +53,8 @@ export const projects: ProjectCard[] = [
     // timeline builder feeds both `show` and `export`.
     flow: {
       nodes: [
-        { id: "hook", label: "Bash hook", detail: "exit · cwd · git", icon: Terminal, x: 20, y: 28 },
-        { id: "collectors", label: "Collectors", detail: "docker · k8s · systemd", icon: Radar, x: 20, y: 72 },
+        { id: "hook", label: "Bash hook", detail: "exit · cwd · git", icon: Terminal, x: 21, y: 28 },
+        { id: "collectors", label: "Collectors", detail: "docker · k8s · systemd", icon: Radar, x: 21, y: 72 },
         { id: "redact", label: "Redact", detail: "capture policy", icon: ShieldCheck, x: 52, y: 50 },
         { id: "store", label: "SQLite", detail: "local store", icon: Database, x: 80, y: 50 },
         { id: "correlate", label: "Correlate", detail: "cmd + change", icon: Waypoints, x: 110, y: 50 },
@@ -190,8 +190,8 @@ export const projects: ProjectCard[] = [
         [["ec2", "verified"]],
       ],
       groups: [
-        { label: "on-prem", x: 4, y: 11, w: 59, h: 33, nodes: ["onprem", "dump"] },
-        { label: "aws", x: 67, y: 11, w: 89, h: 59, nodes: ["s3", "ec2", "verified"] },
+        { label: "on-prem", x: 3, y: 11, w: 60, h: 33, nodes: ["onprem", "dump"] },
+        { label: "aws", x: 66, y: 11, w: 90, h: 59, nodes: ["s3", "ec2", "verified"] },
       ],
       description:
         "Hourly pg_dump backups of the on-premises order app ship to Amazon S3, and after an outage terraform apply builds an EC2 instance that restores the latest backup and was verified healthy in 3 minutes 55 seconds.",
