@@ -19,6 +19,7 @@ import {
   NAME_GAP_CQW,
   TILE,
   fontCss,
+  isPlannedEdge,
   pointOnCurve,
   wireBetween,
   type Curve,
@@ -65,7 +66,7 @@ export type FlowDiagramData = {
   description?: string;
 };
 
-type Wire = FlowEdge & { key: string; curve: Curve; arrow: string; step: number };
+type Wire = FlowEdge & { key: string; curve: Curve; arrow: string; step: number; planned: boolean };
 
 function arrowHead([, , p2, p3]: Curve): string {
   const len = Math.hypot(p3.x - p2.x, p3.y - p2.y) || 1;
@@ -111,9 +112,13 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
   const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
 
   const { wires, stepCount } = useMemo(() => {
-    const order = steps
-      ? steps.map((step) => step.map(([from, to]) => ({ from, to })))
-      : layeredSteps(nodes, edges);
+    // Packets only travel paths that exist today; wires to planned stages stay still.
+    const live = (e: FlowEdge) => !isPlannedEdge(e, nodes);
+    const order = (
+      steps
+        ? steps.map((step) => step.map(([from, to]) => ({ from, to })).filter(live))
+        : layeredSteps(nodes, edges.filter(live))
+    ).filter((step) => step.length);
     const stepOf = new Map<string, number>();
     order.forEach((step, i) => step.forEach((e) => stepOf.set(edgeKey(e), i)));
     const wires = edges.flatMap((edge): Wire[] => {
@@ -121,7 +126,8 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
       const b = nodeById.get(edge.to);
       if (!a || !b) return [];
       const curve = wireBetween(a, b);
-      return [{ ...edge, key: edgeKey(edge), curve, arrow: arrowHead(curve), step: stepOf.get(edgeKey(edge)) ?? -1 }];
+      const planned = !live(edge);
+      return [{ ...edge, key: edgeKey(edge), curve, arrow: arrowHead(curve), step: stepOf.get(edgeKey(edge)) ?? -1, planned }];
     });
     return { wires, stepCount: order.length };
   }, [steps, nodes, edges, nodeById]);
@@ -281,27 +287,33 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
           {wires.map((w) => (
             <g key={w.key} fill="none" strokeLinecap="round" strokeLinejoin="round">
               <g stroke="#ffffff" strokeOpacity={0.16} strokeWidth={1.25}>
-                <path d={curvePath(w.curve)} vectorEffect="non-scaling-stroke" />
+                <path
+                  d={curvePath(w.curve)}
+                  strokeDasharray={w.planned ? "3 4" : undefined}
+                  vectorEffect="non-scaling-stroke"
+                />
                 <path d={w.arrow} vectorEffect="non-scaling-stroke" />
               </g>
-              <g
-                ref={(el) => {
-                  if (el) litEls.current.set(w.key, el);
-                  else litEls.current.delete(w.key);
-                }}
-                stroke="#fde047"
-                strokeWidth={1.5}
-                style={{ opacity: 0 }}
-              >
-                <path d={curvePath(w.curve)} strokeOpacity={0.75} vectorEffect="non-scaling-stroke" />
-                <path d={w.arrow} vectorEffect="non-scaling-stroke" />
-              </g>
+              {!w.planned && (
+                <g
+                  ref={(el) => {
+                    if (el) litEls.current.set(w.key, el);
+                    else litEls.current.delete(w.key);
+                  }}
+                  stroke="#fde047"
+                  strokeWidth={1.5}
+                  style={{ opacity: 0 }}
+                >
+                  <path d={curvePath(w.curve)} strokeOpacity={0.75} vectorEffect="non-scaling-stroke" />
+                  <path d={w.arrow} vectorEffect="non-scaling-stroke" />
+                </g>
+              )}
             </g>
           ))}
         </svg>
 
         {animated &&
-          wires.map((w) => (
+          wires.map((w) => !w.planned && (
             <span key={w.key} aria-hidden>
               {[0, ...TRAIL].map((_, i) => (
                 <span
@@ -363,8 +375,8 @@ export default function FlowDiagram({ nodes, edges, groups = [], steps, descript
                 {text}
               </span>
               {detail && (
-                // Hidden on phones, and on any diagram too narrow to fit them.
-                <span className="hidden text-white/60 sm:@sm:block" style={{ fontSize: fontCss(DETAIL_FONT) }}>
+                // Hidden on phones, and on any diagram narrower than DETAIL_WIDTH.
+                <span className="hidden text-white/70 sm:@[34rem]:block" style={{ fontSize: fontCss(DETAIL_FONT) }}>
                   {detail}
                 </span>
               )}

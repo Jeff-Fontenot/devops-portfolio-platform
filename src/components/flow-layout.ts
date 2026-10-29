@@ -17,14 +17,18 @@ export const WIRE_GAP = 1.5;
 
 // Label typography. FlowDiagram builds its font sizes from these; the
 // tracking values mirror its Tailwind classes, which must stay literal.
-export const NAME_FONT = { min: 10, cqw: 2, max: 11 };
-export const DETAIL_FONT = { min: 7, cqw: 1.55, max: 9 };
+export const NAME_FONT = { min: 10, cqw: 2.1, max: 12 };
+export const DETAIL_FONT = { min: 10, cqw: 1.9, max: 11 };
 export const GROUP_FONT_PX = 10;
 export const NAME_GAP_CQW = 1.1;
 export const DETAIL_GAP_CQW = 0.5;
 // Below this diagram width (the @sm container query, 24rem) letter-spacing
-// tightens and details hide. Details also hide below a 640px viewport.
+// tightens.
 export const ROOMY_WIDTH = 384;
+// Detail lines only appear on diagrams at least this wide (the @[34rem]
+// container query), where they fit at a readable 10px or more. They also
+// hide below a 640px viewport.
+export const DETAIL_WIDTH = 544;
 export const NAME_TRACKING = { narrow: 0.04, roomy: 0.12 };
 export const GROUP_TRACKING = { narrow: 0.06, roomy: 0.16 };
 export const GROUP_LABEL_INSET_CQW = 2;
@@ -55,6 +59,12 @@ export function wireBetween(a: Point, b: Point): Curve {
   const p3 = { x: b.x, y: b.y - s * inset };
   const mid = (p3.y - p0.y) / 2;
   return [p0, { x: p0.x, y: p0.y + mid }, { x: p3.x, y: p3.y - mid }, p3];
+}
+
+// A wire into or out of a planned stage depicts work that doesn't exist yet,
+// so it is drawn dashed and never carries a packet.
+export function isPlannedEdge(e: { from: string; to: string }, nodes: FlowNode[]): boolean {
+  return nodes.some((n) => n.planned && (n.id === e.from || n.id === e.to));
 }
 
 export function pointOnCurve([p0, p1, p2, p3]: Curve, t: number): Point {
@@ -195,13 +205,19 @@ export function checkFlowData(data: FlowDiagramData): string[] {
     if (n.x < 0 || n.x > GRID_W || n.y < 0 || n.y > GRID_H) issues.push(`"${n.id}" sits outside the ${GRID_W}x${GRID_H} grid`);
   }
   const edgeKeys = new Set<string>();
+  const plannedKeys = new Set<string>();
   for (const e of data.edges) {
     if (!ids.has(e.from) || !ids.has(e.to)) issues.push(`edge ${e.from} -> ${e.to} names a missing node`);
-    edgeKeys.add(`${e.from}>${e.to}`);
+    if (isPlannedEdge(e, data.nodes)) plannedKeys.add(`${e.from}>${e.to}`);
+    else edgeKeys.add(`${e.from}>${e.to}`);
   }
+  if (!edgeKeys.size) issues.push("no implemented path for packets to travel");
   if (data.steps) {
     const stepped = new Set(data.steps.flat().map(([from, to]) => `${from}>${to}`));
-    for (const key of stepped) if (!edgeKeys.has(key)) issues.push(`step ${key.replace(">", " -> ")} is not an edge`);
+    for (const key of stepped) {
+      if (plannedKeys.has(key)) issues.push(`step ${key.replace(">", " -> ")} animates a planned stage`);
+      else if (!edgeKeys.has(key)) issues.push(`step ${key.replace(">", " -> ")} is not an edge`);
+    }
     for (const key of edgeKeys) if (!stepped.has(key)) issues.push(`edge ${key.replace(">", " -> ")} is in no step, so no packet travels it`);
   }
   const linked = new Set(data.edges.flatMap((e) => [e.from, e.to]));

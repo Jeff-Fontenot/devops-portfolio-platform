@@ -41,7 +41,7 @@ export const projects: ProjectCard[] = [
     title: "WakeTrail",
     status: "Pre-Release Hardening",
     description:
-      "Cuts incident troubleshooting time by reconstructing a forensic timeline that correlates command execution with the Git, Docker, Kubernetes, and systemd state changes that follow it. Every push is gated by CI-enforced formatting, linting, and test coverage.",
+      "Helps reconstruct incidents by building a forensic timeline that correlates command execution with the Git, Docker, Kubernetes, and systemd state changes that follow it. Every push is gated by CI-enforced formatting, linting, and test coverage.",
     tech: ["Go", "Cobra", "SQLite", "Docker", "Git", "GitHub Actions"],
     repoUrl: "https://github.com/it-odyssey/waketrail",
     caseStudySlug: "waketrail",
@@ -122,37 +122,32 @@ export const projects: ProjectCard[] = [
     title: "Ops-Status: DevOps Lifecycle",
     status: "In-Progress",
     description:
-      "A FastAPI monitoring service built as the test workload for an end-to-end DevOps lifecycle, starting from Docker Compose. The same versioned container is promoted through k3s staging into Terraform-managed AWS production with full observability.",
+      "A FastAPI monitoring service built as the test workload for an end-to-end DevOps lifecycle. It runs on Docker Compose today; the plan is to promote the same versioned container through k3s staging into Terraform-managed AWS production with full observability.",
     tech: ["Docker Compose", "Python", "FastAPI"],
     repoUrl: "https://github.com/Jeff-Fontenot/ops-status",
     caseStudySlug: "ops-status",
-    // One image, promoted in order. Only the app, image and Compose stages
-    // exist today; CI, k3s staging and AWS are drawn as planned.
+    // One image, promoted in order. Only the app, the locally built image and
+    // Compose exist today, so only that path animates; CI, k3s staging and
+    // AWS are drawn as planned, with still, dashed wires.
     flow: {
       nodes: [
         { id: "app", label: "FastAPI", detail: "/health · /checks", icon: Code, x: 18, y: 50 },
-        { id: "ci", label: "CI", detail: "tests · planned", icon: FlaskConical, planned: true, x: 50, y: 50 },
+        { id: "ci", label: "CI", detail: "tests · planned", icon: FlaskConical, planned: true, x: 50, y: 20 },
         { id: "image", label: "Image", detail: "built once", icon: Package, x: 82, y: 50 },
         { id: "compose", label: "Compose", detail: "local", icon: Container, x: 136, y: 18 },
         { id: "k3s", label: "k3s", detail: "staging · planned", icon: ShipWheel, planned: true, x: 136, y: 50 },
         { id: "aws", label: "AWS", detail: "fargate · planned", icon: Cloud, planned: true, x: 136, y: 82 },
       ],
       edges: [
+        { from: "app", to: "image" },
         { from: "app", to: "ci" },
         { from: "ci", to: "image" },
         { from: "image", to: "compose" },
         { from: "image", to: "k3s" },
         { from: "image", to: "aws" },
       ],
-      steps: [
-        [["app", "ci"]],
-        [["ci", "image"]],
-        [["image", "compose"]],
-        [["image", "k3s"]],
-        [["image", "aws"]],
-      ],
       description:
-        "The Ops-Status FastAPI service is built once into a versioned container image and promoted to local Docker Compose today, with CI, k3s staging, and AWS Fargate production planned next.",
+        "The Ops-Status FastAPI service is built locally into a versioned container image that runs on Docker Compose today, while a CI test gate, k3s staging, and AWS Fargate production are planned but not yet built.",
     },
   },
 

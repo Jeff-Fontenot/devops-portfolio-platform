@@ -3,7 +3,7 @@
 // `npm run check:flows` after adding or editing a diagram; it exits non-zero
 // on any problem. The rules are written up in docs/flow-diagrams.md.
 
-import { checkFlowData, checkFlowLayout, ROOMY_WIDTH } from "../src/components/flow-layout.ts";
+import { checkFlowData, checkFlowLayout, DETAIL_WIDTH } from "../src/components/flow-layout.ts";
 import { projects } from "../src/components/projects-data.ts";
 
 // Narrowest to widest rendered diagram, measured in the browser: a card in
@@ -21,8 +21,8 @@ for (const project of projects) {
   const found = new Map();
   for (const issue of checkFlowData(project.flow)) found.set(issue, null);
   for (let width = MIN_WIDTH; width <= MAX_WIDTH; width += STEP) {
-    // Sublabels can only appear on diagrams at least ROOMY_WIDTH wide.
-    for (const details of width >= ROOMY_WIDTH ? [false, true] : [false]) {
+    // Sublabels can only appear on diagrams at least DETAIL_WIDTH wide.
+    for (const details of width >= DETAIL_WIDTH ? [false, true] : [false]) {
       for (const issue of checkFlowLayout(project.flow, width, details)) {
         const key = details ? `${issue} (with sublabels)` : issue;
         const range = found.get(key) ?? [width, width];
