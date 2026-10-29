@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Github, ArrowRight } from "lucide-react";
 import FadeIn from "./FadeIn";
+import FlowDiagram from "./FlowDiagram";
 import { projects } from "./projects-data";
 
 // Fetches live data client-side, so its server-rendered skeleton never
@@ -44,6 +45,13 @@ export default function Projects() {
           {projects.map((project, i) => (
             <FadeIn key={project.title} delay={i * 0.08}>
               <div className="glass-container glass-hover flex h-full flex-col p-8">
+                {project.flow && (
+                  // Full-bleed cover on phones so node names keep their 10px minimum
+                  // without colliding; an inset panel from sm up.
+                  <div className="-mx-8 -mt-8 mb-6 overflow-hidden border-b border-white/10 bg-[#0b0d13] sm:mx-0 sm:mt-0 sm:rounded-xl sm:border">
+                    <FlowDiagram {...project.flow} />
+                  </div>
+                )}
                 <div className="mb-3 flex flex-col items-start gap-2">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <div className="flex w-full items-center justify-between gap-2">
