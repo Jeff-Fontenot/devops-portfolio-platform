@@ -1,37 +1,5 @@
 import FadeIn from "./FadeIn";
-
-const responsibilities = [
-  {
-    title: "Enterprise Troubleshooting",
-    detail:
-      "Resolve authentication, DNS, CAC certificate, proxy, domain-trust, endpoint, and hybrid identity issues within a mission-critical federal enterprise environment.",
-  },
-  {
-    title: "Incident Operations",
-    detail:
-      "Manage 20–30 support calls daily while investigating technical issues, maintaining detailed Remedy incident records, and escalating problems with clear troubleshooting context.",
-  },
-  {
-    title: "Account Access & Authorization",
-    detail:
-      "Review account status, attributes, OU placement, and group membership in Active Directory; restore deprovisioned accounts only after validating required documentation and authorization under established procedures.",
-  },
-  {
-    title: "Hybrid Microsoft Services",
-    detail:
-      "Troubleshoot Exchange Online and hybrid messaging issues, including SMTP proxy/target addresses, licensing, GAL visibility, and Azure AD Connect synchronization.",
-  },
-  {
-    title: "Automation & Process Improvement",
-    detail:
-      "Built a menu-driven PowerShell prototype that consolidated recurring Active Directory support workflows, demonstrating opportunities for faster, more consistent incident handling.",
-  },
-  {
-    title: "Documentation & Communication",
-    detail:
-      "Document troubleshooting procedures and clearly communicate technical findings, escalation context, and resolution steps to end users and internal support teams.",
-  },
-];
+import Responsibilities from "./Responsibilities";
 
 export default function Experience() {
   return (
@@ -72,14 +40,7 @@ export default function Experience() {
           </div>
 
           {/* Key Responsibilities */}
-          <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
-            {responsibilities.map((r) => (
-              <div key={r.title}>
-                <p className="text-sm font-semibold text-yellow-400 mb-1">{r.title}</p>
-                <p className="text-sm text-white/60 leading-relaxed">{r.detail}</p>
-              </div>
-            ))}
-          </div>
+          <Responsibilities />
         </FadeIn>
       </div>
     </section>
