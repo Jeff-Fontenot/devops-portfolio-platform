@@ -26,6 +26,8 @@ Pick the **one** workflow the project card's description promises: the path data
 The diagrams sit on a hiring portfolio, so they must not overstate the work.
 
 - Show only what exists. A stage that is planned but not built gets `planned: true` (dashed, dimmed tile), the word `planned` in its detail line, and the description says so. See Ops-Status.
+- Packets only travel implemented paths. Any wire into or out of a planned stage is drawn dashed and never lights or carries a packet, so the animation can't suggest a deployment is running. Make sure the implemented part still forms a path of its own (Ops-Status draws the planned CI gate as a detour above the live `FastAPI -> Image` wire). The checker fails if a step animates a planned wire or no implemented path is left.
+- The card's prose description follows the same rule: say what runs today, and call the rest a plan.
 - Don't draw a dependency as traffic, or traffic as causation. If the case study hedges (WakeTrail: "a clue, not proof"), the labels must not claim more.
 - Measured numbers (RTO 3:55) only when the case study reports them.
 
@@ -62,18 +64,19 @@ Coordinates are on a 160 x 100 grid. A tile is 14 units square, centered on its 
 
 - At most 7 nodes, and at most 3 in one column.
 - Node names: 10 characters or fewer. Two long names (9 or 10 characters) side by side in the same row need at least 30 units between them.
-- Detail lines: about 16 characters or fewer; up to about 22 in the outer columns only if the checker passes.
+- Detail lines: about 16 characters or fewer; up to about 22 in the outer columns only if the checker passes. They only show on diagrams at least 544px wide, so the names alone must tell the story.
 - Box labels: short, lowercase, 14 characters or fewer.
 - A box must fully contain, or fully exclude, each tile and label, including the detail line.
 
-You don't need to do this math by hand. `npm run check:flows` tests every width the cards render at (276px to 660px, with and without detail lines) and names each collision with the widths where it happens. Labels use Geist Mono, whose glyphs are all 0.6em wide, so the checker's text widths match the browser to within 0.1px.
+You don't need to do this math by hand. `npm run check:flows` tests every width the cards render at (276px to 660px, with detail lines from 544px) and names each collision with the widths where it happens. Labels use Geist Mono, whose glyphs are all 0.6em wide, so the checker's text widths match the browser to within 0.1px.
 
 ## 5. Tell the story
 
 Packets travel the edges in steps over a 6 second loop. Each step's packets leave together, the wires light gold behind them and the arriving tile pulses.
 
 - By default, steps are layered by depth: all edges leaving the sources fire together, then the next layer, and so on. Fan-ins and fan-outs fire in parallel. This is usually right.
-- Set `steps` when the narrative order differs from the graph. Hybrid Cloud DR runs the backup first, then provisioning, restore and verification, even though Terraform is a source node. Ops-Status promotes to one environment at a time.
+- Set `steps` when the narrative order differs from the graph. Hybrid Cloud DR runs the backup first, then provisioning, restore and verification, even though Terraform is a source node.
+- Planned wires are left out of the steps automatically; don't list them.
 - Keep it to 6 steps or fewer, so each step gets at least a second.
 
 ## 6. Write the copy
@@ -144,8 +147,9 @@ For reference when reviewing; all of it is implemented once in the component.
 | Lit wires | Gold, fill in as the packet travels, fade together at the end of the loop |
 | Packets | Pale gold head with glow and a four-particle comet tail |
 | Boxes | Dashed white at 13%, turn gold while a packet is inside |
-| Names | Geist Mono, uppercase, 10 to 11px, never below 10px |
-| Detail lines | Geist Mono, white at 60%, hidden below 640px viewports and on diagrams under 384px wide |
+| Planned wires | Dashed white at 16%, never lit, no packets |
+| Names | Geist Mono, uppercase, 10 to 12px, never below 10px |
+| Detail lines | Geist Mono, white at 70%, 10 to 11px; hidden below 640px viewports and on diagrams under 544px wide |
 | Motion | 6s loop, 66% of each step travelling and 34% paused; pauses off screen; static with reduced motion |
 | Accessibility | Drawing is `aria-hidden`; the one-sentence `description` is read instead |
 
